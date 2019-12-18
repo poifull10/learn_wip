@@ -4,6 +4,7 @@
 
 #include <array>
 #include <memory>
+#include <utility>
 #include <vector>
 
 namespace wip
@@ -11,8 +12,12 @@ namespace wip
 class FeatureExtractor
 {
 public:
-  FeatureExtractor() = default;
+  FeatureExtractor(int FASTThresh) : FASTThresh_(FASTThresh) {}
 
-  std::vector<cv::Mat> operator()(const cv::Mat &image) const;
+  std::pair<std::vector<cv::KeyPoint>, cv::Mat> operator()(
+    const cv::Mat &image) const;
+
+private:
+  int FASTThresh_;
 };
 } // namespace wip
