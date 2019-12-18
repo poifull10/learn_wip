@@ -1,31 +1,18 @@
 #pragma once
 
+#include <opencv2/opencv.hpp>
+
+#include <array>
 #include <memory>
 #include <vector>
-#include <array>
 
 namespace wip
 {
-  constexpr size_t DESCRIPTOR_DIM = 512;
+class FeatureExtractor
+{
+public:
+  FeatureExtractor() = default;
 
-  class KeyPoint
-  {
-
-  };
-
-  class Descriptor
-  {
-    private:
-    std::array<bool, DESCRIPTOR_DIM> features_;
-  };
-
-  class FeatureExtractorBase
-  {
-    public:
-      FeatureExtractorBase() = default;
-
-
-    private:
-      std::vector<KeyPoint> keyPoints_;
-  };
-}
+  std::vector<cv::Mat> operator()(const cv::Mat &image) const;
+};
+} // namespace wip

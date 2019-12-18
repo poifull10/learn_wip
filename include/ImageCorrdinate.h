@@ -4,26 +4,31 @@
 
 namespace wip
 {
-  template<typename T, size_t N>
-  class Point
+template <typename T, size_t N>
+class Point
+{
+public:
+  Point() : array_() {}
+  Point(const std::initializer_list<T>& init) : array_(init.begin(), init.end())
   {
-    public:
-    Point() : array_() {}
+  }
 
-    T& operator[](size_t i)
-    {
-      return array_.at(i);
-    }
+  T operator[](size_t i) const { return array_[i]; }
+  T& operator[](size_t i) { return array_[i]; }
 
-    Point operator+ (const Point& point) {
-      Point p;
-      for (size_t i=0;i<N; i++){
-        p[i] = (*this)[i] + point[i];
-      }
-      return p;
-    }
-    private:
-    std::array<T, N> array_;
+private:
+  std::vector<T> array_;
+};
 
-  };
-}
+// template <typename T, size_t N>
+// Point<T, N> operator+(const Point<T, N>& p1, const Point<T, N>& p2)
+// {
+//   Point<T, N> p;
+//   for (size_t i = 0; i < N; i++)
+//   {
+//     p[i] = p1[i] + p2[i];
+//   }
+//   return p;
+// }
+
+} // namespace wip
