@@ -12,7 +12,11 @@ Pose PoseInitializer::operator()(const Image &src, const Image &dst) const
   dm->match(dsSrc, dsDst, matches);
 
   // Ransac
-
+  // Select 8 points
+  for (size_t i = 0; i < ransac_n_; i++)
+  {
+    std::uniform_int_distribution randInt(0, static_cast<int>(matches.size())-1);
+  }
   // Estimate H, F
 
   // Select H, F
