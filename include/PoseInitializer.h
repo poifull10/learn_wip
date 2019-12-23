@@ -16,13 +16,5 @@ public:
 private:
   FeatureExtractor featureExtractor_;
   size_t ransac_n_;
-
-  std::pair<float, cv::Mat> estimateHomography(
-    const std::vector<cv::DMatch> &matches,
-    const std::vector<cv::KeyPoint> &srcKeyPoints,
-    const std::vector<cv::KeyPoint> &dstKeyPoints);
-
-  // cv::Mat calcHomography(std::vector<cv::Vec2f> srcPoints,
-  //                        std::vector<cv::Vec2f> dstPoints);
 };
 } // namespace wip
