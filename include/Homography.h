@@ -20,12 +20,22 @@ public:
     , ransacN_(ransacN)
   {
   }
+
+  HomographyEstimator(size_t ransacN = 30)
+    : matches_(), srcKeyPoints_(), dstKeyPoints_(), ransacN_(ransacN)
+  {
+  }
+
   std::pair<float, cv::Mat> estimate();
+
+  /**
+   *  @return double matrix
+   */
+  cv::Mat calculate(const std::vector<cv::Point2f> &srcPoints,
+                    const std::vector<cv::Point2f> &dstPoints) const;
 
 private:
   size_t ransacN_;
-  cv::Mat calculate(const std::vector<cv::Point2f> &srcPoints,
-                    const std::vector<cv::Point2f> &dstPoints) const;
   float evalueate(const cv::Mat &H, std::vector<cv::Point2f> &srcPoints,
                   const std::vector<cv::Point2f> &dstPoints) const;
 

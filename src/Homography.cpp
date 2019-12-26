@@ -42,7 +42,11 @@ float HomographyEstimator::evalueate(
   const cv::Mat &H, std::vector<cv::Point2f> &srcPoints,
   const std::vector<cv::Point2f> &dstPoints) const
 {
-  // const auto estimatedDstPoints = H * srcPoints;
+  const auto src = cv::Mat(srcPoints).reshape(1, 2).t();
+  const auto dst = cv::Mat(dstPoints).reshape(1, 2).t();
+  const auto estimatedDstPoints = H * src;
+  const auto estimatedSrcPoints = H.inv() * dst;
+  // estimatedDstPoints - dst;
   return 0;
 }
 
