@@ -4,7 +4,9 @@ namespace wip
 {
 Point2D operator*(const cv::Mat& mat, const Point2D& point)
 {
-  const auto ret_ = mat * point.homoMatrix();
+  cv::Mat H;
+  mat.convertTo(H, CV_32F);
+  const auto ret_ = H * point.homoMatrix();
   cv::Mat ret;
   cv::convertPointsFromHomogeneous(ret_.t(), ret);
   return Point2D(ret);
@@ -14,9 +16,11 @@ std::vector<Point2D> operator*(const cv::Mat& mat,
                                const std::vector<Point2D>& points)
 {
   std::vector<Point2D> retPoints;
+  cv::Mat H;
+  mat.convertTo(H, CV_32F);
   for (const auto point : points)
   {
-    const auto ret_ = mat * point.homoMatrix();
+    const auto ret_ = H * point.homoMatrix();
     cv::Mat ret;
     cv::convertPointsFromHomogeneous(ret_.t(), ret);
     retPoints.emplace_back(ret);

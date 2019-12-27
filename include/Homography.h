@@ -2,6 +2,8 @@
 
 #include <opencv2/opencv.hpp>
 
+#include "Point.h"
+
 #include <utility>
 #include <vector>
 
@@ -39,7 +41,7 @@ public:
   cv::Mat calculate(const std::vector<cv::Point2f> &srcPoints,
                     const std::vector<cv::Point2f> &dstPoints) const;
 
-  float evaluate(cv::Mat &H, std::vector<cv::Point2f> &srcPoints,
+  float evaluate(const cv::Mat &H, std::vector<cv::Point2f> &srcPoints,
                  const std::vector<cv::Point2f> &dstPoints) const;
 
 private:

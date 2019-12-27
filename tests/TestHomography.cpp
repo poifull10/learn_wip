@@ -49,11 +49,8 @@ TEST(HomographyEstimator, test_evaluate)
   dst.emplace_back(1.89840739, 1.11539421);
 
   const auto H = he.calculate(src, dst);
-  std::vector<cv::Point3f> src_;
+  float score = he.evaluate(H, src, dst);
 
-  // cv::convertPointsToHomogeneous(src, src_);
-  // cv::Mat srcMat = cv::Mat(src_).reshape(1, 4);
-  // std::cout << srcMat << std::endl;
-  // std::cout << srcMat.channels() << std::endl;
+  EXPECT_FLOAT_EQ(score, 0.f);
 }
 } // namespace wip
