@@ -18,11 +18,16 @@ public:
     , srcKeyPoints_(srcKeyPoints)
     , dstKeyPoints_(dstKeyPoints)
     , ransacN_(ransacN)
+    , thresh_(2.44765)
   {
   }
 
   HomographyEstimator(size_t ransacN = 30)
-    : matches_(), srcKeyPoints_(), dstKeyPoints_(), ransacN_(ransacN)
+    : matches_()
+    , srcKeyPoints_()
+    , dstKeyPoints_()
+    , ransacN_(ransacN)
+    , thresh_(2.44765)
   {
   }
 
@@ -34,13 +39,16 @@ public:
   cv::Mat calculate(const std::vector<cv::Point2f> &srcPoints,
                     const std::vector<cv::Point2f> &dstPoints) const;
 
+  float evaluate(cv::Mat &H, std::vector<cv::Point2f> &srcPoints,
+                 const std::vector<cv::Point2f> &dstPoints) const;
+
 private:
-  size_t ransacN_;
-  float evalueate(const cv::Mat &H, std::vector<cv::Point2f> &srcPoints,
-                  const std::vector<cv::Point2f> &dstPoints) const;
+  float evalFunc(const float val) const;
 
   std::vector<cv::DMatch> matches_;
   std::vector<cv::KeyPoint> srcKeyPoints_;
   std::vector<cv::KeyPoint> dstKeyPoints_;
+  float thresh_;
+  size_t ransacN_;
 };
 } // namespace wip
