@@ -14,3 +14,9 @@ RUN mkdir /build && cd /build && git clone https://github.com/opencv/opencv.git 
   cd opencv && mkdir build && cd build && cmake .. -GNinja && \
   ninja && ninja install
 
+RUN apt install -y libboost-dev gcc-8 g++-8
+
+ENV CC /usr/bin/gcc-8
+
+ENV CXX /usr/bin/g++-8
+

@@ -29,33 +29,4 @@ Pose PoseInitializer::operator()(const Image &src, const Image &dst) const
   return Pose();
 }
 
-std::pair<float, cv::Mat> PoseInitializer::estimateHomography(
-  const std::vector<cv::DMatch> &matches,
-  const std::vector<cv::KeyPoint> &srcKeyPoints,
-  const std::vector<cv::KeyPoint> &dstKeyPoints)
-{
-  float score = -std::numeric_limits<float>::max();
-  cv::Mat H;
-
-  for (size_t i = 0; i < ransac_n_; i++)
-  {
-    RandomSampler rs(matches.size());
-    const auto [eightIndices, otherIndices] = rs.sample(8);
-
-    assert(eightIndices.size() == 8);
-    std::vector<cv::Point2f> srcPoints, dstPoints;
-    for (const auto id : eightIndices)
-    {
-      const auto srcInd = matches[id].trainIdx;
-      const auto dstInd = matches[id].queryIdx;
-      srcPoints.push_back(srcKeyPoints[srcInd].pt);
-      dstPoints.push_back(dstKeyPoints[dstInd].pt);
-    }
-
-    // const auto H_ = calcHomography(srcPoints, dstPoints);
-  }
-
-  return {score, H};
-}
-
 } // namespace wip
