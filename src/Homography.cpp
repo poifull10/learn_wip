@@ -5,7 +5,7 @@
 namespace wip
 {
 
-std::pair<float, cv::Mat> HomographyEstimator::estimate()
+std::pair<float, cv::Mat> HomographyEstimator::estimate() const
 {
   float score = -std::numeric_limits<float>::max();
   cv::Mat H;
@@ -69,6 +69,12 @@ float HomographyEstimator::evalFunc(const float val) const
   }
 
   return 0.f;
+}
+
+Pose HomographyEstimator::getPose(const cv::Mat &H) const
+{
+  // cv::decomposeHomographyMat(H);
+  return Pose();
 }
 
 } // namespace wip

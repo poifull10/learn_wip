@@ -2,7 +2,7 @@ add_executable(
   tester
   main.cpp
   TestFeatureExtractor.cpp
-  TestDataset.cpp
+  TestCameraModel.cpp
   TestImage.cpp
   TestRandomSampler.cpp
   TestHomography.cpp
