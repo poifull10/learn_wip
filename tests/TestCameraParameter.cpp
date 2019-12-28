@@ -1,14 +1,14 @@
 #include <gtest/gtest.h>
 
-#include "CameraModel.h"
+#include "CameraParameter.h"
 
 #include <filesystem>
 #include <iostream>
 
-TEST(Dataset, test_constructor)
+TEST(CameraParameter, test_constructor)
 {
   std::string fname = "../tests/test_calib.json";
-  wip::PinholeCameraModel pcm(fname);
+  wip::PinholeCameraParameter pcm(fname);
   const auto K = pcm.K();
   EXPECT_FLOAT_EQ(K.at<float>(cv::Point(0, 0)), 100);
   EXPECT_FLOAT_EQ(K.at<float>(cv::Point(2, 0)), 32);

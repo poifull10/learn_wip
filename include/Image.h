@@ -13,8 +13,8 @@ public:
   Image(cv::Mat&& img) : data_(std::move(img)){};
   Image() : data_(){};
 
-  Image(const Image&) = delete;
-  Image& operator=(const Image& image) = delete;
+  Image(const Image&) = default;
+  Image& operator=(const Image& image) = default;
 
   cv::Mat data() const { return data_; }
   size_t width() const { return data_.cols; }

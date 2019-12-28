@@ -2,10 +2,10 @@ add_executable(
   tester
   main.cpp
   TestFeatureExtractor.cpp
-  TestCameraModel.cpp
+  TestCameraParameter.cpp
   TestImage.cpp
   TestRandomSampler.cpp
   TestHomography.cpp
   TestPoint.cpp)
 
-target_link_libraries(tester gtest wip stdc++fs)
+target_link_libraries(tester gtest wip)

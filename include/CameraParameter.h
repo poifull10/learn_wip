@@ -8,11 +8,15 @@
 namespace wip
 {
 
-class PinholeCameraModel
+class PinholeCameraParameter
 {
 public:
-  PinholeCameraModel() = delete;
-  PinholeCameraModel(const std::filesystem::path& fpath);
+  PinholeCameraParameter() = default;
+  PinholeCameraParameter(const PinholeCameraParameter& pcp) = default;
+  PinholeCameraParameter(const std::filesystem::path& fpath);
+
+  PinholeCameraParameter& operator=(const PinholeCameraParameter& pcp) =
+    default;
 
   cv::Mat K() const { return K_; }
   std::vector<float> dist() const { return dist_; }

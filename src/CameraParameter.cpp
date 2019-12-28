@@ -1,4 +1,4 @@
-#include "CameraModel.h"
+#include "CameraParameter.h"
 
 #include <boost/optional.hpp>
 #include <boost/property_tree/json_parser.hpp>
@@ -7,7 +7,8 @@ namespace wip
 {
 using namespace boost::property_tree;
 
-PinholeCameraModel::PinholeCameraModel(const std::filesystem::path& fpath)
+PinholeCameraParameter::PinholeCameraParameter(
+  const std::filesystem::path& fpath)
   : K_(cv::Size(3, 3), CV_32F), fx_(), fy_(), cx_(), cy_()
 {
   ptree pt;
