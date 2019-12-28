@@ -9,7 +9,7 @@ using namespace boost::property_tree;
 
 PinholeCameraParameter::PinholeCameraParameter(
   const std::filesystem::path& fpath)
-  : K_(cv::Size(3, 3), CV_32F), fx_(), fy_(), cx_(), cy_()
+  : PinholeCameraParameter()
 {
   ptree pt;
   read_json(fpath.string(), pt);
@@ -20,6 +20,10 @@ PinholeCameraParameter::PinholeCameraParameter(
     fy_ = pt.get_optional<float>("fy").get();
     cx_ = pt.get_optional<float>("cx").get();
     cy_ = pt.get_optional<float>("cy").get();
+    k1_ = pt.get_optional<float>("k1").get();
+    k2_ = pt.get_optional<float>("k2").get();
+    p1_ = pt.get_optional<float>("p1").get();
+    p2_ = pt.get_optional<float>("p2").get();
     K_.at<float>(cv::Point(0, 0)) = fx_;
     K_.at<float>(cv::Point(1, 0)) = 0;
     K_.at<float>(cv::Point(2, 0)) = cx_;
