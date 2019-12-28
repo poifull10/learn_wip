@@ -1,5 +1,5 @@
-#include <boost/program_options.hpp>
 #include <boost/format.hpp>
+#include <boost/program_options.hpp>
 #include <opencv2/opencv.hpp>
 
 #include "Dataset.h"
@@ -11,8 +11,9 @@ int main(int argc, char** argv)
 {
   namespace bopt = boost::program_options;
   bopt::options_description opt("Options");
-  opt.add_options()("help,h", "show help")("dir,d", bopt::value<std::string>(),
-                                           "data dir");
+  opt.add_options()("help,h", "show help")(
+    "dir,D", bopt::value<std::string>(), "data dir")("debug,d",
+                                                     "debug mode, dump files");
 
   bopt::variables_map vm;
 
@@ -40,17 +41,19 @@ int main(int argc, char** argv)
 
     wip::FeatureExtractor fe;
     size_t i = 0;
-    for (const auto& image : dataset){
+    for (const auto& image : dataset)
+    {
       const auto [keypoints, desc] = fe(image.data());
-      cv::Mat img = image.data();
-      img.convertTo(img, CV_8UC3);
-      cv::drawKeypoints(img, keypoints, img, cv::Scalar(0, 255, 0));
-      const std::string s = (boost::format("%04d.png") % i).str();
-      std::cout << s << std::endl;
-      cv::imwrite(s, img);
-      i++;
+      if (vm.count("debug"))
+      {
+        cv::Mat img = image.data();
+        cv::drawKeypoints(img, keypoints, img, cv::Scalar(0, 255, 0));
+        const std::string s = (boost::format("%04d.png") % i).str();
+        std::cout << "Writing: " << s << std::endl;
+        cv::imwrite(s, img);
+        i++;
+      }
     }
-
   }
   return 0;
 }
