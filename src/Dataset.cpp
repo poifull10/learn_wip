@@ -1,34 +1,28 @@
 #include "Dataset.h"
 
-#include <boost/optional.hpp>
-#include <boost/property_tree/json_parser.hpp>
+#include <cppglob/glob.hpp>
+
+#include <algorithm>
+#include <vector>
+
 
 namespace wip
 {
-using namespace boost::property_tree;
-
-PinholeCameraModel::PinholeCameraModel(const std::filesystem::path& fpath)
-  : K_(cv::Size(3, 3), CV_32F), fx_(), fy_(), cx_(), cy_()
+Dataset::Dataset(const std::filesystem::path& path) : images_ {}
 {
-  ptree pt;
-  read_json(fpath.string(), pt);
-  if (const auto value = pt.get_optional<float>("fx"))
-  {
-    // data format fx fy cx cy ...
-    fx_ = pt.get_optional<float>("fx").get();
-    fy_ = pt.get_optional<float>("fy").get();
-    cx_ = pt.get_optional<float>("cx").get();
-    cy_ = pt.get_optional<float>("cy").get();
-    K_.at<float>(cv::Point(0, 0)) = fx_;
-    K_.at<float>(cv::Point(1, 0)) = 0;
-    K_.at<float>(cv::Point(2, 0)) = cx_;
-    K_.at<float>(cv::Point(0, 1)) = 0;
-    K_.at<float>(cv::Point(1, 1)) = fy_;
-    K_.at<float>(cv::Point(2, 1)) = cy_;
-    K_.at<float>(cv::Point(0, 2)) = 0;
-    K_.at<float>(cv::Point(1, 2)) = 0;
-    K_.at<float>(cv::Point(2, 2)) = 1;
+  namespace fs = std::filesystem;
+
+  std::vector<fs::path> files = cppglob::glob(path / "cam0/*.png", true);
+  std::sort(files.begin(), files.end());
+  for (const auto& f : files) {
+    std::cout << "Loading: " << f << std::endl;
+    images_.push_back(load_image(f));
+  }
+
+  std::vector<fs::path> calibs = cppglob::glob(path / "cam0.json", true);
+  if (calibs.size() > 0){
+    std::cout << "Loading: " << calibs[0] << std::endl;
+    cameraParameter_ = PinholeCameraParameter(calibs[0]);
   }
 }
-
 } // namespace wip

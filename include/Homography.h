@@ -1,13 +1,10 @@
 #pragma once
 
-#include <opencv2/opencv.hpp>
-
-#include <utility>
-#include <vector>
+#include "PoseEstimator.h"
 
 namespace wip
 {
-class HomographyEstimator
+class HomographyEstimator : public PoseEstimator
 {
 public:
   HomographyEstimator(const std::vector<cv::DMatch> &matches,
@@ -31,16 +28,18 @@ public:
   {
   }
 
-  std::pair<float, cv::Mat> estimate();
+  std::pair<float, cv::Mat> estimate() const override;
 
   /**
    *  @return double matrix
    */
   cv::Mat calculate(const std::vector<cv::Point2f> &srcPoints,
-                    const std::vector<cv::Point2f> &dstPoints) const;
+                    const std::vector<cv::Point2f> &dstPoints) const override;
 
-  float evaluate(cv::Mat &H, std::vector<cv::Point2f> &srcPoints,
-                 const std::vector<cv::Point2f> &dstPoints) const;
+  float evaluate(const cv::Mat &H, std::vector<cv::Point2f> &srcPoints,
+                 const std::vector<cv::Point2f> &dstPoints) const override;
+
+  Pose getPose(const cv::Mat &H) const override;
 
 private:
   float evalFunc(const float val) const;

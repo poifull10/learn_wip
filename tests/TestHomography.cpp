@@ -49,11 +49,33 @@ TEST(HomographyEstimator, test_evaluate)
   dst.emplace_back(1.89840739, 1.11539421);
 
   const auto H = he.calculate(src, dst);
-  std::vector<cv::Point3f> src_;
+  float score = he.evaluate(H, src, dst);
 
-  // cv::convertPointsToHomogeneous(src, src_);
-  // cv::Mat srcMat = cv::Mat(src_).reshape(1, 4);
-  // std::cout << srcMat << std::endl;
-  // std::cout << srcMat.channels() << std::endl;
+  EXPECT_FLOAT_EQ(score, 0.f);
+}
+
+TEST(HomographyEstimator, test_getPose)
+{
+  wip::HomographyEstimator he;
+  std::vector<cv::Point2f> src;
+  src.emplace_back(1, 2);
+  src.emplace_back(2, 6);
+  src.emplace_back(-3, 0.3);
+  src.emplace_back(9, -4);
+  std::vector<cv::Point2f> dst;
+  dst.emplace_back(1.22135867, 0.93899514);
+  dst.emplace_back(1.64745532, 1.07120274);
+  dst.emplace_back(-189.32242839, -54.92238531);
+  dst.emplace_back(1.89840739, 1.11539421);
+
+  cv::Mat K = (cv::Mat_<float>(3, 3) << 100, 0, 50, 0, 100, 50, 0, 0, 1);
+
+  // const auto H = he.calculate(src, dst);
+  // std::vector<cv::Mat> rotations, translations, normals;
+  // cv::decomposeHomographyMat(H, K, rotations, translations, normals);
+
+  // std::cout << normals.size() << std::endl;
+  // std::cout << normals[0] << std::endl;
+  // std::cout << cv::norm(normals[0]) << std::endl;
 }
 } // namespace wip

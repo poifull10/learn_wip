@@ -1,26 +1,32 @@
 #pragma once
+
 #include <opencv2/opencv.hpp>
 
+#include "CameraParameter.h"
+#include "Image.h"
+
 #include <filesystem>
-#include <string>
 #include <vector>
 
 namespace wip
 {
 
-class PinholeCameraModel
+class Dataset
 {
 public:
-  PinholeCameraModel() = delete;
-  PinholeCameraModel(const std::filesystem::path& fpath);
+  using iterator = typename std::vector<Image>::iterator;
+  using const_iterator = typename std::vector<Image>::const_iterator;
+  Dataset(const std::filesystem::path& path);
 
-  cv::Mat K() const { return K_; }
-  std::vector<float> dist() const { return dist_; }
+  size_t size() const { return images_.size(); }
+
+  iterator begin() { return images_.begin(); }
+  iterator end() { return images_.end(); }
+  const_iterator begin() const { return images_.begin(); }
+  const_iterator end() const { return images_.end(); }
 
 private:
-  cv::Mat K_;
-  std::vector<float> dist_;
-  float fx_, fy_, cx_, cy_;
+  std::vector<Image> images_;
+  PinholeCameraParameter cameraParameter_;
 };
-
 } // namespace wip

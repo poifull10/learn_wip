@@ -5,7 +5,7 @@
 namespace wip
 {
 
-std::pair<float, cv::Mat> HomographyEstimator::estimate()
+std::pair<float, cv::Mat> HomographyEstimator::estimate() const
 {
   float score = -std::numeric_limits<float>::max();
   cv::Mat H;
@@ -39,29 +39,24 @@ cv::Mat HomographyEstimator::calculate(
 }
 
 float HomographyEstimator::evaluate(
-  cv::Mat &H, std::vector<cv::Point2f> &srcPoints,
+  const cv::Mat &H, std::vector<cv::Point2f> &srcPoints,
   const std::vector<cv::Point2f> &dstPoints) const
 {
-  // auto src = cv::Mat(srcPoints).reshape(1, 2).t();
-  // auto dst = cv::Mat(dstPoints).reshape(1, 2).t();
-  // std::vector<cv::Point3f> src;
-  // std::vector<cv::Point3f> dst;
-  // cv::convertPointsToHomogeneous(srcPoints, src);
-  // cv::convertPointsToHomogeneous(dstPoints, dst);
-  // auto estimatedSrcPoints = H.inv() * dst;
-  // auto estimatedDstPoints = H * src;
-  // cv::convertPointsFromHomogeneous(estimatedSrcPoints, estimatedSrcPoints);
-  // cv::convertPointsFromHomogeneous(estimatedDstPoints, estimatedDstPoints);
+  const auto srcPoints_ = H.inv() * convertToPoint2D(dstPoints);
+  const auto dstPoints_ = H * convertToPoint2D(srcPoints);
 
-  // const auto subSrc = src - estimatedSrcPoints;
-  // const auto subDst = dst - estimatedDstPoints;
+  assert(srcPoints.size() == dstPoints.size());
+  assert(srcPoints.size() == srcPoints_.size());
+  assert(srcPoints.size() == dstPoints_.size());
 
   float score = 0;
-  // for (size_t h = 0; h < srcPoints.size(); h++)
-  // {
-  //   score +=
-  //     evalFunc(cv::norm(subSrc.row(h))) + evalFunc(cv::norm(subDst.row(h)));
-  // }
+  for (size_t i = 0; i < srcPoints.size(); i++)
+  {
+    const auto subSrc = srcPoints_[i].x() - srcPoints[i].x;
+    const auto subDst = dstPoints_[i].y() - dstPoints[i].y;
+    score += evalFunc(cv::norm(subSrc)) + evalFunc(cv::norm(subDst));
+  }
+
   return score;
 }
 
@@ -74,6 +69,12 @@ float HomographyEstimator::evalFunc(const float val) const
   }
 
   return 0.f;
+}
+
+Pose HomographyEstimator::getPose(const cv::Mat &H) const
+{
+  // cv::decomposeHomographyMat(H);
+  return Pose();
 }
 
 } // namespace wip
