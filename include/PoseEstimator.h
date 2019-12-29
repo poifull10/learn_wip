@@ -13,23 +13,12 @@ namespace wip
 class PoseEstimator
 {
 public:
-  PoseEstimator(const std::vector<cv::DMatch> &matches,
-                const std::vector<cv::KeyPoint> &srcKeyPoints,
-                const std::vector<cv::KeyPoint> &dstKeyPoints,
-                size_t ransacN = 30)
-    : matches_(matches)
-    , srcKeyPoints_(srcKeyPoints)
-    , dstKeyPoints_(dstKeyPoints)
-    , ransacN_(ransacN)
-  {
-  }
+  PoseEstimator(size_t ransacN = 30) : ransacN_(ransacN) {}
 
-  PoseEstimator(size_t ransacN = 30)
-    : matches_(), srcKeyPoints_(), dstKeyPoints_(), ransacN_(ransacN)
-  {
-  }
-
-  std::pair<float, cv::Mat> estimate() const;
+  std::pair<float, cv::Mat> estimate(
+    const std::vector<cv::DMatch> &matches,
+    const std::vector<cv::KeyPoint> &srcKeyPoints,
+    const std::vector<cv::KeyPoint> &dstKeyPoints) const;
 
   virtual cv::Mat calculate(
     const std::vector<cv::Point2f> &srcPoints,
@@ -41,9 +30,6 @@ public:
   virtual Pose getPose(const cv::Mat &H) const = 0;
 
 protected:
-  std::vector<cv::DMatch> matches_;
-  std::vector<cv::KeyPoint> srcKeyPoints_;
-  std::vector<cv::KeyPoint> dstKeyPoints_;
   size_t ransacN_;
 };
 } // namespace wip

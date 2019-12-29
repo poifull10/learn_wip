@@ -6,6 +6,7 @@ add_executable(
   TestImage.cpp
   TestRandomSampler.cpp
   TestHomography.cpp
-  TestPoint.cpp)
+  TestPoint.cpp
+  TestFundamentalMatrix.cpp)
 
 target_link_libraries(tester gtest wip)
