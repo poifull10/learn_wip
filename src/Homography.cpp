@@ -26,6 +26,12 @@ std::pair<float, cv::Mat> HomographyEstimator::estimate() const
     }
 
     const auto H_ = calculate(srcPoints, dstPoints);
+    const auto score_ = evaluate(H, srcPoints, dstPoints);
+    if (score < score_)
+    {
+      score = score_;
+      H = H_;
+    }
   }
 
   return {score, H};
