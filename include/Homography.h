@@ -20,8 +20,6 @@ public:
   {
   }
 
-  std::pair<float, cv::Mat> estimate() const override;
-
   /**
    *  @return double matrix
    */

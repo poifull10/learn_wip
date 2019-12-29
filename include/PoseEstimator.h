@@ -34,7 +34,8 @@ public:
   {
   }
 
-  virtual std::pair<float, cv::Mat> estimate() const = 0;
+  std::pair<float, cv::Mat> estimate() const;
+
   virtual cv::Mat calculate(
     const std::vector<cv::Point2f> &srcPoints,
     const std::vector<cv::Point2f> &dstPoints) const = 0;

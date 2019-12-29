@@ -2,6 +2,8 @@
 
 #include "PoseEstimator.h"
 
+#include <utility>
+
 namespace wip
 {
 class FundamentalMatrixEstimator : public PoseEstimator
@@ -16,10 +18,22 @@ public:
   }
 
   FundamentalMatrixEstimator(size_t ransacN = 30, float thresh = 2.44765f)
-    : HomographyEstimator(ransacN_, thresh)
+    : PoseEstimator(ransacN_, thresh)
   {
   }
 
+  /**
+   *  @return double matrix
+   */
+  cv::Mat calculate(const std::vector<cv::Point2f> &srcPoints,
+                    const std::vector<cv::Point2f> &dstPoints) const override;
+
+  float evaluate(const cv::Mat &H, std::vector<cv::Point2f> &srcPoints,
+                 const std::vector<cv::Point2f> &dstPoints) const override;
+
+  Pose getPose(const cv::Mat &H) const override;
+
 private:
+  float evalFunc(const float val) const;
 };
 } // namespace wip

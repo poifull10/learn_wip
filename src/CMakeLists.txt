@@ -2,6 +2,7 @@ add_library(
   wip
   FeatureExtractor.cpp
   PoseInitializer.cpp
+  PoseEstimator.cpp
   CameraParameter.cpp
   Image.cpp
   Frame.cpp
