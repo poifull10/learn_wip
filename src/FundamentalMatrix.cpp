@@ -8,7 +8,7 @@ cv::Mat FundamentalMatrixEstimator::calculate(
   const std::vector<cv::Point2f> &srcPoints,
   const std::vector<cv::Point2f> &dstPoints) const
 {
-  return cv::findHomography(srcPoints, dstPoints);
+  return cv::findFundamentalMat(srcPoints, dstPoints, cv::FM_8POINT);
 }
 
 float FundamentalMatrixEstimator::evaluate(
@@ -35,7 +35,8 @@ float FundamentalMatrixEstimator::evaluate(
 
 float FundamentalMatrixEstimator::evalFunc(const float val) const
 {
-  const auto threshDouble = thresh_ * thresh_;
+  const auto thresh = 2;
+  const auto threshDouble = thresh * thresh;
   if (threshDouble < val)
   {
     return threshDouble - val;

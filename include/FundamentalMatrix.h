@@ -12,15 +12,12 @@ public:
   FundamentalMatrixEstimator(const std::vector<cv::DMatch> &matches,
                              const std::vector<cv::KeyPoint> &srcKeyPoints,
                              const std::vector<cv::KeyPoint> &dstKeyPoints,
-                             size_t ransacN = 30, float thresh = 2.44765f)
-    : PoseEstimator(matches, srcKeyPoints, dstKeyPoints, ransacN, thresh)
+                             size_t ransacN = 30)
+    : PoseEstimator(matches, srcKeyPoints, dstKeyPoints, ransacN)
   {
   }
 
-  FundamentalMatrixEstimator(size_t ransacN = 30, float thresh = 2.44765f)
-    : PoseEstimator(ransacN_, thresh)
-  {
-  }
+  FundamentalMatrixEstimator(size_t ransacN = 30) : PoseEstimator(ransacN_) {}
 
   /**
    *  @return double matrix

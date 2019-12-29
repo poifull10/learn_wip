@@ -16,21 +16,16 @@ public:
   PoseEstimator(const std::vector<cv::DMatch> &matches,
                 const std::vector<cv::KeyPoint> &srcKeyPoints,
                 const std::vector<cv::KeyPoint> &dstKeyPoints,
-                size_t ransacN = 30, float thresh = 2.44765f)
+                size_t ransacN = 30)
     : matches_(matches)
     , srcKeyPoints_(srcKeyPoints)
     , dstKeyPoints_(dstKeyPoints)
     , ransacN_(ransacN)
-    , thresh_(thresh)
   {
   }
 
-  PoseEstimator(size_t ransacN = 30, float thresh = 2.44765f)
-    : matches_()
-    , srcKeyPoints_()
-    , dstKeyPoints_()
-    , ransacN_(ransacN)
-    , thresh_(thresh)
+  PoseEstimator(size_t ransacN = 30)
+    : matches_(), srcKeyPoints_(), dstKeyPoints_(), ransacN_(ransacN)
   {
   }
 
@@ -49,7 +44,6 @@ protected:
   std::vector<cv::DMatch> matches_;
   std::vector<cv::KeyPoint> srcKeyPoints_;
   std::vector<cv::KeyPoint> dstKeyPoints_;
-  float thresh_;
   size_t ransacN_;
 };
 } // namespace wip
