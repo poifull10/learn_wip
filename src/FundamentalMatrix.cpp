@@ -1,16 +1,17 @@
-
-#include "Homography.h"
+#include "FundamentalMatrix.h"
+#include "RandomSampler.h"
 
 namespace wip
 {
-cv::Mat HomographyEstimator::calculate(
+
+cv::Mat FundamentalMatrixEstimator::calculate(
   const std::vector<cv::Point2f> &srcPoints,
   const std::vector<cv::Point2f> &dstPoints) const
 {
-  return cv::findHomography(srcPoints, dstPoints);
+  return cv::findFundamentalMat(srcPoints, dstPoints, cv::FM_8POINT);
 }
 
-float HomographyEstimator::evaluate(
+float FundamentalMatrixEstimator::evaluate(
   const cv::Mat &H, std::vector<cv::Point2f> &srcPoints,
   const std::vector<cv::Point2f> &dstPoints) const
 {
@@ -32,9 +33,9 @@ float HomographyEstimator::evaluate(
   return score;
 }
 
-float HomographyEstimator::evalFunc(const float val) const
+float FundamentalMatrixEstimator::evalFunc(const float val) const
 {
-  const auto thresh = 2.44765f;
+  const auto thresh = 2;
   const auto threshDouble = thresh * thresh;
   if (threshDouble < val)
   {
@@ -44,10 +45,9 @@ float HomographyEstimator::evalFunc(const float val) const
   return 0.f;
 }
 
-Pose HomographyEstimator::getPose(const cv::Mat &H) const
+Pose FundamentalMatrixEstimator::getPose(const cv::Mat &H) const
 {
   // cv::decomposeHomographyMat(H);
   return Pose();
 }
-
 } // namespace wip

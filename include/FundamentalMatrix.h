@@ -2,12 +2,14 @@
 
 #include "PoseEstimator.h"
 
+#include <utility>
+
 namespace wip
 {
-class HomographyEstimator : public PoseEstimator
+class FundamentalMatrixEstimator : public PoseEstimator
 {
 public:
-  HomographyEstimator(size_t ransacN = 30) : PoseEstimator(ransacN_) {}
+  FundamentalMatrixEstimator(size_t ransacN = 30) : PoseEstimator(ransacN_) {}
 
   /**
    *  @return double matrix

@@ -2,13 +2,15 @@ add_library(
   wip
   FeatureExtractor.cpp
   PoseInitializer.cpp
+  PoseEstimator.cpp
   CameraParameter.cpp
   Image.cpp
   Frame.cpp
   RandomSampler.cpp
   Homography.cpp
   Point.cpp
-  Dataset.cpp)
+  Dataset.cpp
+  FundamentalMatrix.cpp)
 
 find_package(Boost REQUIRED)
 target_include_directories(wip SYSTEM PUBLIC ${CMAKE_SOURCE_DIR}/include)
