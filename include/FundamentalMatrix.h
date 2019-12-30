@@ -9,7 +9,7 @@ namespace wip
 class FundamentalMatrixEstimator : public PoseEstimator
 {
 public:
-  FundamentalMatrixEstimator(size_t ransacN = 30) : PoseEstimator(ransacN_) {}
+  FundamentalMatrixEstimator(size_t ransacN = 30) : PoseEstimator(ransacN) {}
 
   /**
    *  @return double matrix
@@ -20,9 +20,9 @@ public:
   float evaluate(const cv::Mat &F, std::vector<cv::Point2f> &srcPoints,
                  const std::vector<cv::Point2f> &dstPoints) const override;
 
-  Pose getPose(const cv::Mat &H, const cv::Mat &K,
-               const std::vector<cv::Point2f> &src,
-               const std::vector<cv::Point2f> &dst) const override;
+  Pose calcPose(const cv::Mat &H, const cv::Mat &K,
+                const std::vector<cv::Point2f> &src,
+                const std::vector<cv::Point2f> &dst) const override;
 
 private:
   float evalFunc(const float val) const;

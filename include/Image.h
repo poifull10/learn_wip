@@ -14,6 +14,7 @@ public:
   Image() : data_(){};
 
   Image(const Image&) = default;
+  Image(Image&& image) : data_(std::move(image.data_)) {}
   Image& operator=(const Image& image) = default;
 
   cv::Mat data() const { return data_; }

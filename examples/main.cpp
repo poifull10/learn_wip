@@ -43,12 +43,12 @@ int main(int argc, char** argv)
     wip::FeatureExtractor fe;
     size_t i = 0;
     // draw keypoints
-    for (const auto& image : dataset)
+    for (const auto& frame : dataset)
     {
-      const auto [keypoints, desc] = fe(image.data());
+      const auto [keypoints, desc] = fe(frame->image().data());
       if (vm.count("debug"))
       {
-        cv::Mat img = image.data();
+        cv::Mat img = frame->image().data();
         cv::drawKeypoints(img, keypoints, img, cv::Scalar(0, 255, 0));
         const std::string s = (boost::format("%04d.png") % i).str();
         std::cout << "Writing: " << s << std::endl;
@@ -58,10 +58,10 @@ int main(int argc, char** argv)
     }
 
     // estimate camera poses
-    if (dataset.size() > 1)
+    for (size_t i = 0; i < dataset.size() - 1; i++)
     {
       wip::PoseInitializer pi;
-      const auto pose = pi(dataset[0], dataset[1]);
+      const auto pose = pi(*dataset[i], *dataset[i + 1]);
     }
   }
   return 0;

@@ -44,9 +44,9 @@ float HomographyEstimator::evalFunc(const float val) const
   return 0.f;
 }
 
-Pose HomographyEstimator::getPose(const cv::Mat &H, const cv::Mat &K,
-                                  const std::vector<cv::Point2f> &src,
-                                  const std::vector<cv::Point2f> &dst) const
+Pose HomographyEstimator::calcPose(const cv::Mat &H, const cv::Mat &K,
+                                   const std::vector<cv::Point2f> &src,
+                                   const std::vector<cv::Point2f> &dst) const
 {
   std::vector<cv::Mat> rotations, translations, normals;
   cv::decomposeHomographyMat(H, K, rotations, translations, normals);

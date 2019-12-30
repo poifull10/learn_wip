@@ -8,13 +8,13 @@
 
 namespace wip
 {
-Pose PoseInitializer::operator()(const Image &src, const Image &dst) const
+Pose PoseInitializer::operator()(Frame &src, Frame &dst) const
 {
-  const auto [kpSrc, dsSrc] = featureExtractor_(src);
-  const auto [kpDst, dsDst] = featureExtractor_(dst);
+  const auto [kpSrc, dsSrc] = featureExtractor_(src.image());
+  const auto [kpDst, dsDst] = featureExtractor_(dst.image());
 
   std::vector<cv::DMatch> matches;
-  const auto dm = cv::DescriptorMatcher::create("FlannBased");
+  const auto dm = cv::DescriptorMatcher::create("BruteForce-Hamming");
   dm->match(dsSrc, dsDst, matches);
 
   std::cout << matches.size() << " matches found" << std::endl;
@@ -25,8 +25,8 @@ Pose PoseInitializer::operator()(const Image &src, const Image &dst) const
     return Pose();
   }
 
-  wip::HomographyEstimator he;
-  wip::FundamentalMatrixEstimator fme;
+  wip::HomographyEstimator he(ransac_n_);
+  wip::FundamentalMatrixEstimator fme(ransac_n_);
 
   const auto [hScore, H] = he.estimate(matches, kpSrc, kpDst);
   const auto [fScore, F] = fme.estimate(matches, kpSrc, kpDst);
@@ -34,6 +34,9 @@ Pose PoseInitializer::operator()(const Image &src, const Image &dst) const
   // Select H, F
   std::cout << "hScore " << hScore << std::endl;
   std::cout << "fScore " << fScore << std::endl;
+
+  // std::cout << he.calcPose();
+  // std::cout << he.calcPose(H, );
 
   return Pose();
 }

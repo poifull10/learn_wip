@@ -3,7 +3,6 @@ add_executable(
   main.cpp
   TestFeatureExtractor.cpp
   TestCameraParameter.cpp
-  TestImage.cpp
   TestRandomSampler.cpp
   TestHomography.cpp
   TestPoint.cpp
