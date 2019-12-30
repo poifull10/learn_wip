@@ -34,11 +34,11 @@ float HomographyEstimator::evaluate(
 
 float HomographyEstimator::evalFunc(const float val) const
 {
-  const auto thresh = 2.44765f;
-  const auto threshDouble = thresh * thresh;
-  if (threshDouble < val)
+  const auto thresh = 5.99;
+  const auto gamma = 5.99;
+  if (thresh < val)
   {
-    return threshDouble - val;
+    return gamma - val;
   }
 
   return 0.f;

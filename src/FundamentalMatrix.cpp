@@ -15,12 +15,12 @@ float FundamentalMatrixEstimator::evaluate(
   const cv::Mat &F, std::vector<cv::Point2f> &srcPoints,
   const std::vector<cv::Point2f> &dstPoints) const
 {
-  const auto srcPoints_ = F.inv() * convertToPoint2D(dstPoints);
-  const auto dstPoints_ = F * convertToPoint2D(srcPoints);
+  const auto srcLines = F.inv() * convertToPoint2D(dstPoints);
+  const auto dstLines = F * convertToPoint2D(srcPoints);
 
   assert(srcPoints.size() == dstPoints.size());
-  assert(srcPoints.size() == srcPoints_.size());
-  assert(srcPoints.size() == dstPoints_.size());
+  assert(srcPoints.size() == srcLines.size());
+  assert(srcPoints.size() == dstLines.size());
 
   float score = 0;
   for (size_t i = 0; i < srcPoints.size(); i++)
@@ -35,11 +35,11 @@ float FundamentalMatrixEstimator::evaluate(
 
 float FundamentalMatrixEstimator::evalFunc(const float val) const
 {
-  const auto thresh = 2;
-  const auto threshDouble = thresh * thresh;
+  const auto thresh = 3.84;
+  const auto gamma = 5.99;
   if (threshDouble < val)
   {
-    return threshDouble - val;
+    return gamma - val;
   }
 
   return 0.f;
