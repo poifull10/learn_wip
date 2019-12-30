@@ -20,7 +20,7 @@ public:
   float evaluate(const cv::Mat &F, std::vector<cv::Point2f> &srcPoints,
                  const std::vector<cv::Point2f> &dstPoints) const override;
 
-  Pose getPose(const cv::Mat &F) const override;
+  Pose getPose(const cv::Mat &F, const cv::Mat &K) const override;
 
 private:
   float evalFunc(const float val) const;

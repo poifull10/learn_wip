@@ -36,7 +36,7 @@ float HomographyEstimator::evalFunc(const float val) const
 {
   const auto thresh = 5.99;
   const auto gamma = 5.99;
-  if (thresh < val)
+  if (val < thresh)
   {
     return gamma - val;
   }
@@ -44,9 +44,11 @@ float HomographyEstimator::evalFunc(const float val) const
   return 0.f;
 }
 
-Pose HomographyEstimator::getPose(const cv::Mat &H) const
+Pose HomographyEstimator::getPose(const cv::Mat &H, const cv::Mat &K) const
 {
-  // cv::decomposeHomographyMat(H);
+  std::vector<cv::Mat> rotations, translations, normals;
+  cv::decomposeHomographyMat(H, K, rotations, translations, normals);
+
   return Pose();
 }
 

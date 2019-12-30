@@ -50,4 +50,14 @@ std::pair<float, cv::Mat> PoseEstimator::estimate(
 
   return {score, H};
 }
+
+cv::Mat compositeProjectionMatrix(const cv::Mat &K, const cv::Mat &R,
+                                  const cv::Mat &t)
+{
+  cv::Mat outerMat = cv::Mat::zeros(cv::Size(4, 3), CV_32F);
+  R.copyTo(outerMat(cv::Rect(0, 0, 3, 3)));
+  t.copyTo(outerMat(cv::Rect(3, 0, 1, 3)));
+  return K * outerMat;
+}
+
 } // namespace wip

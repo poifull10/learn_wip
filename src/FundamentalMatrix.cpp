@@ -25,9 +25,9 @@ float FundamentalMatrixEstimator::evaluate(
   float score = 0;
   for (size_t i = 0; i < srcPoints.size(); i++)
   {
-    const auto subSrc = srcPoints_[i].x() - srcPoints[i].x;
-    const auto subDst = dstPoints_[i].y() - dstPoints[i].y;
-    score += evalFunc(cv::norm(subSrc)) + evalFunc(cv::norm(subDst));
+    // const auto subSrc = srcPoints_[i].x() - srcPoints[i].x;
+    // const auto subDst = dstPoints_[i].y() - dstPoints[i].y;
+    // score += evalFunc(cv::norm(subSrc)) + evalFunc(cv::norm(subDst));
   }
 
   return score;
@@ -37,7 +37,7 @@ float FundamentalMatrixEstimator::evalFunc(const float val) const
 {
   const auto thresh = 3.84;
   const auto gamma = 5.99;
-  if (threshDouble < val)
+  if (val < thresh)
   {
     return gamma - val;
   }
@@ -45,7 +45,8 @@ float FundamentalMatrixEstimator::evalFunc(const float val) const
   return 0.f;
 }
 
-Pose FundamentalMatrixEstimator::getPose(const cv::Mat &F) const
+Pose FundamentalMatrixEstimator::getPose(const cv::Mat &F,
+                                         const cv::Mat &K) const
 {
   // cv::decomposeHomographyMat(H);
   return Pose();

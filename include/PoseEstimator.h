@@ -24,12 +24,16 @@ public:
     const std::vector<cv::Point2f> &srcPoints,
     const std::vector<cv::Point2f> &dstPoints) const = 0;
 
-  virtual float evaluate(const cv::Mat &H, std::vector<cv::Point2f> &srcPoints,
+  virtual float evaluate(const cv::Mat &HorF,
+                         std::vector<cv::Point2f> &srcPoints,
                          const std::vector<cv::Point2f> &dstPoints) const = 0;
 
-  virtual Pose getPose(const cv::Mat &H) const = 0;
+  virtual Pose getPose(const cv::Mat &HorF, const cv::Mat &K) const = 0;
 
 protected:
   size_t ransacN_;
 };
+
+cv::Mat compositeProjectionMatrix(const cv::Mat &K, const cv::Mat &R,
+                                  const cv::Mat &t);
 } // namespace wip
