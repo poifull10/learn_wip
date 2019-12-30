@@ -12,11 +12,11 @@ cv::Mat FundamentalMatrixEstimator::calculate(
 }
 
 float FundamentalMatrixEstimator::evaluate(
-  const cv::Mat &H, std::vector<cv::Point2f> &srcPoints,
+  const cv::Mat &F, std::vector<cv::Point2f> &srcPoints,
   const std::vector<cv::Point2f> &dstPoints) const
 {
-  const auto srcPoints_ = H.inv() * convertToPoint2D(dstPoints);
-  const auto dstPoints_ = H * convertToPoint2D(srcPoints);
+  const auto srcPoints_ = F.inv() * convertToPoint2D(dstPoints);
+  const auto dstPoints_ = F * convertToPoint2D(srcPoints);
 
   assert(srcPoints.size() == dstPoints.size());
   assert(srcPoints.size() == srcPoints_.size());
@@ -45,7 +45,7 @@ float FundamentalMatrixEstimator::evalFunc(const float val) const
   return 0.f;
 }
 
-Pose FundamentalMatrixEstimator::getPose(const cv::Mat &H) const
+Pose FundamentalMatrixEstimator::getPose(const cv::Mat &F) const
 {
   // cv::decomposeHomographyMat(H);
   return Pose();
