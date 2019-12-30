@@ -4,6 +4,7 @@
 
 #include "Dataset.h"
 #include "FeatureExtractor.h"
+#include "PoseInitializer.h"
 
 #include <string>
 
@@ -36,11 +37,12 @@ int main(int argc, char** argv)
   if (vm.count("dir"))
   {
     const auto dataDir = vm["dir"].as<std::string>();
-    wip::Dataset dataset(dataDir);
+    wip::Dataset dataset(dataDir, 3);
     std::cout << dataset.size() << std::endl;
 
     wip::FeatureExtractor fe;
     size_t i = 0;
+    // draw keypoints
     for (const auto& image : dataset)
     {
       const auto [keypoints, desc] = fe(image.data());
@@ -53,6 +55,13 @@ int main(int argc, char** argv)
         cv::imwrite(s, img);
         i++;
       }
+    }
+
+    // estimate camera poses
+    if (dataset.size() > 1)
+    {
+      wip::PoseInitializer pi;
+      const auto pose = pi(dataset[0], dataset[1]);
     }
   }
   return 0;

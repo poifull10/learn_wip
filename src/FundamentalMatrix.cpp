@@ -64,8 +64,9 @@ float FundamentalMatrixEstimator::evalFunc(const float val) const
   return 0.f;
 }
 
-Pose FundamentalMatrixEstimator::getPose(const cv::Mat &F,
-                                         const cv::Mat &K) const
+Pose FundamentalMatrixEstimator::getPose(
+  const cv::Mat &H, const cv::Mat &K, const std::vector<cv::Point2f> &src,
+  const std::vector<cv::Point2f> &dst) const
 {
   // cv::decomposeHomographyMat(H);
   return Pose();

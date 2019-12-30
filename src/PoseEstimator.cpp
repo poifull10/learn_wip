@@ -40,7 +40,8 @@ std::pair<float, cv::Mat> PoseEstimator::estimate(
       evalDstMatchedPoints.push_back(dstKeyPoints[match.queryIdx].pt);
     }
 
-    const auto score_ = evaluate(H, evalSrcMatchedPoints, evalDstMatchedPoints);
+    const auto score_ =
+      evaluate(H_, evalSrcMatchedPoints, evalDstMatchedPoints);
     if (score < score_)
     {
       score = score_;

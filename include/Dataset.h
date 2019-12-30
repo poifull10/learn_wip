@@ -16,7 +16,7 @@ class Dataset
 public:
   using iterator = typename std::vector<Image>::iterator;
   using const_iterator = typename std::vector<Image>::const_iterator;
-  Dataset(const std::filesystem::path& path);
+  Dataset(const std::filesystem::path& path, size_t fileNumLimit = 0);
 
   size_t size() const { return images_.size(); }
 
@@ -24,6 +24,8 @@ public:
   iterator end() { return images_.end(); }
   const_iterator begin() const { return images_.begin(); }
   const_iterator end() const { return images_.end(); }
+
+  Image operator[](size_t i) { return images_[i]; }
 
 private:
   std::vector<Image> images_;

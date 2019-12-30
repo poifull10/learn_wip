@@ -28,7 +28,9 @@ public:
                          std::vector<cv::Point2f> &srcPoints,
                          const std::vector<cv::Point2f> &dstPoints) const = 0;
 
-  virtual Pose getPose(const cv::Mat &HorF, const cv::Mat &K) const = 0;
+  virtual Pose getPose(const cv::Mat &H, const cv::Mat &K,
+                       const std::vector<cv::Point2f> &src,
+                       const std::vector<cv::Point2f> &dst) const = 0;
 
 protected:
   size_t ransacN_;
