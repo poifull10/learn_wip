@@ -15,19 +15,38 @@ float FundamentalMatrixEstimator::evaluate(
   const cv::Mat &F, std::vector<cv::Point2f> &srcPoints,
   const std::vector<cv::Point2f> &dstPoints) const
 {
-  const auto srcLines = F.inv() * convertToPoint2D(dstPoints);
-  const auto dstLines = F * convertToPoint2D(srcPoints);
-
   assert(srcPoints.size() == dstPoints.size());
-  assert(srcPoints.size() == srcLines.size());
-  assert(srcPoints.size() == dstLines.size());
 
   float score = 0;
   for (size_t i = 0; i < srcPoints.size(); i++)
   {
-    // const auto subSrc = srcPoints_[i].x() - srcPoints[i].x;
-    // const auto subDst = dstPoints_[i].y() - dstPoints[i].y;
-    // score += evalFunc(cv::norm(subSrc)) + evalFunc(cv::norm(subDst));
+    float f0 = F.at<double>(cv::Point(0, 0));
+    float f1 = F.at<double>(cv::Point(1, 0));
+    float f2 = F.at<double>(cv::Point(2, 0));
+    float f3 = F.at<double>(cv::Point(0, 1));
+    float f4 = F.at<double>(cv::Point(1, 1));
+    float f5 = F.at<double>(cv::Point(2, 1));
+    float f6 = F.at<double>(cv::Point(0, 2));
+    float f7 = F.at<double>(cv::Point(1, 2));
+    float f8 = F.at<double>(cv::Point(2, 2));
+
+    const auto aSrc = f0 * dstPoints[i].x + f3 * dstPoints[i].y + f6;
+    const auto bSrc = f1 * dstPoints[i].x + f4 * dstPoints[i].y + f7;
+    const auto cSrc = f2 * dstPoints[i].x + f5 * dstPoints[i].y + f8;
+    const auto upperSqrtSrcScore =
+      aSrc * srcPoints[i].x + bSrc * srcPoints[i].y + cSrc;
+    const auto srcScore =
+      (upperSqrtSrcScore * upperSqrtSrcScore) / (aSrc * aSrc + bSrc * bSrc);
+
+    const auto aDst = f0 * srcPoints[i].x + f1 * srcPoints[i].y + f2;
+    const auto bDst = f3 * srcPoints[i].x + f4 * srcPoints[i].y + f5;
+    const auto cDst = f6 * srcPoints[i].x + f7 * srcPoints[i].y + f8;
+    const auto upperSqrtDstScore =
+      aDst * dstPoints[i].x + bDst * dstPoints[i].y + cDst;
+    const auto dstScore =
+      (upperSqrtDstScore * upperSqrtDstScore) / (aDst * aDst + bDst * bDst);
+
+    score += evalFunc(srcScore) + evalFunc(dstScore);
   }
 
   return score;
