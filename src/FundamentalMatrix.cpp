@@ -13,7 +13,7 @@ cv::Mat FundamentalMatrixEstimator::calculate(
 
 float FundamentalMatrixEstimator::evaluate(
   const cv::Mat &F, std::vector<cv::Point2f> &srcPoints,
-  const std::vector<cv::Point2f> &dstPoints) const
+  const std::vector<cv::Point2f> &dstPoints)
 {
   assert(srcPoints.size() == dstPoints.size());
 
@@ -35,18 +35,23 @@ float FundamentalMatrixEstimator::evaluate(
     const auto cSrc = f2 * dstPoints[i].x + f5 * dstPoints[i].y + f8;
     const auto upperSqrtSrcScore =
       aSrc * srcPoints[i].x + bSrc * srcPoints[i].y + cSrc;
-    const auto srcScore =
-      (upperSqrtSrcScore * upperSqrtSrcScore) / (aSrc * aSrc + bSrc * bSrc);
+    const auto srcScore = evalFunc((upperSqrtSrcScore * upperSqrtSrcScore) /
+                                   (aSrc * aSrc + bSrc * bSrc));
 
     const auto aDst = f0 * srcPoints[i].x + f1 * srcPoints[i].y + f2;
     const auto bDst = f3 * srcPoints[i].x + f4 * srcPoints[i].y + f5;
     const auto cDst = f6 * srcPoints[i].x + f7 * srcPoints[i].y + f8;
     const auto upperSqrtDstScore =
       aDst * dstPoints[i].x + bDst * dstPoints[i].y + cDst;
-    const auto dstScore =
-      (upperSqrtDstScore * upperSqrtDstScore) / (aDst * aDst + bDst * bDst);
+    const auto dstScore = evalFunc((upperSqrtDstScore * upperSqrtDstScore) /
+                                   (aDst * aDst + bDst * bDst));
 
-    score += evalFunc(srcScore) + evalFunc(dstScore);
+    if (srcScore > 0 && dstScore > 0)
+    {
+      inliners_.push_back(std::make_pair(srcPoints[i], dstPoints[i]));
+    }
+
+    score += srcScore + dstScore;
   }
 
   return score;

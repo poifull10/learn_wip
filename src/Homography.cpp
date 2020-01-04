@@ -10,9 +10,9 @@ cv::Mat HomographyEstimator::calculate(
   return cv::findHomography(srcPoints, dstPoints);
 }
 
-float HomographyEstimator::evaluate(
-  const cv::Mat &H, std::vector<cv::Point2f> &srcPoints,
-  const std::vector<cv::Point2f> &dstPoints) const
+float HomographyEstimator::evaluate(const cv::Mat &H,
+                                    std::vector<cv::Point2f> &srcPoints,
+                                    const std::vector<cv::Point2f> &dstPoints)
 {
   const auto srcPoints_ = H.inv() * convertToPoint2D(dstPoints);
   const auto dstPoints_ = H * convertToPoint2D(srcPoints);
@@ -26,7 +26,14 @@ float HomographyEstimator::evaluate(
   {
     const auto subSrc = srcPoints_[i].x() - srcPoints[i].x;
     const auto subDst = dstPoints_[i].y() - dstPoints[i].y;
-    score += evalFunc(cv::norm(subSrc)) + evalFunc(cv::norm(subDst));
+    const auto srcScore = cv::norm(subSrc);
+    const auto dstScore = cv::norm(subDst);
+
+    if (srcScore > 0 && dstScore > 0)
+    {
+      inliners_.push_back(std::make_pair(srcPoints[i], dstPoints[i]));
+    }
+    score += srcScore + dstScore;
   }
 
   return score;
@@ -51,6 +58,7 @@ Pose HomographyEstimator::calcPose(const cv::Mat &H, const cv::Mat &K,
   std::vector<cv::Mat> rotations, translations, normals;
   cv::decomposeHomographyMat(H, K, rotations, translations, normals);
 
+  int valid = 0;
   for (size_t i = 0; i < rotations.size(); i++)
   {
     cv::Mat triangluatedPointsInHomogeneous;
@@ -59,8 +67,46 @@ Pose HomographyEstimator::calcPose(const cv::Mat &H, const cv::Mat &K,
                                 cv::Mat::zeros(3, 1, CV_32F)),
       compositeProjectionMatrix(K, rotations[i], translations[i]), src, dst,
       triangluatedPointsInHomogeneous);
-    std::cout << triangluatedPointsInHomogeneous << std::endl;
+    bool isValid = true;
+    for (size_t j = 0; j < triangluatedPointsInHomogeneous.cols; j++)
+    {
+      if (triangluatedPointsInHomogeneous.at<float>(cv::Point(j, 2)) /
+            triangluatedPointsInHomogeneous.at<float>(cv::Point(j, 3)) >
+          0)
+      {
+        const auto x =
+          triangluatedPointsInHomogeneous.at<float>(cv::Point(j, 0));
+        const auto y =
+          triangluatedPointsInHomogeneous.at<float>(cv::Point(j, 1));
+        const auto z =
+          triangluatedPointsInHomogeneous.at<float>(cv::Point(j, 2));
+        const auto w =
+          triangluatedPointsInHomogeneous.at<float>(cv::Point(j, 3));
+        cv::Point3f p(x / w, y / w, z / w);
+        if (cv::Point3f(normals[i]).dot(p) > 0)
+        {
+          isValid &= true;
+        }
+        else
+        {
+          isValid &= false;
+        }
+      }
+      else
+      {
+        isValid &= false;
+      }
+    }
+    if (isValid)
+    {
+      valid++;
+      std::cout << rotations[i] << std::endl;
+      std::cout << translations[i] << std::endl;
+      std::cout << normals[i] << std::endl;
+    }
   }
+  std::cout << "Hypothesis: " << rotations.size() << std::endl;
+  std::cout << "Valid: " << valid << std::endl;
 
   return Pose();
 }

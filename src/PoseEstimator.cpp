@@ -11,7 +11,7 @@ namespace wip
 std::pair<float, cv::Mat> PoseEstimator::estimate(
   const std::vector<cv::DMatch> &matches,
   const std::vector<cv::KeyPoint> &srcKeyPoints,
-  const std::vector<cv::KeyPoint> &dstKeyPoints) const
+  const std::vector<cv::KeyPoint> &dstKeyPoints)
 {
   float score = -std::numeric_limits<float>::max();
   cv::Mat H;
