@@ -26,8 +26,8 @@ float HomographyEstimator::evaluate(const cv::Mat &H,
   {
     const auto subSrc = srcPoints_[i].x() - srcPoints[i].x;
     const auto subDst = dstPoints_[i].y() - dstPoints[i].y;
-    const auto srcScore = cv::norm(subSrc);
-    const auto dstScore = cv::norm(subDst);
+    const auto srcScore = evalFunc(cv::norm(subSrc));
+    const auto dstScore = evalFunc(cv::norm(subDst));
 
     if (srcScore > 0 && dstScore > 0)
     {
