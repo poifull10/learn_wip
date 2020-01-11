@@ -1,6 +1,7 @@
 #include "PoseInitializer.h"
 #include "FundamentalMatrix.h"
 #include "Homography.h"
+#include "OpenCVUtils.h"
 #include "RandomSampler.h"
 
 #include <cassert>
@@ -36,7 +37,10 @@ Pose PoseInitializer::operator()(Frame &src, Frame &dst) const
   std::cout << "fScore " << fScore << std::endl;
 
   // std::cout << he.calcPose();
-  // std::cout << he.calcPose(H, );
+  const auto [matchedSrc, matchedDst] =
+    wip::getMatchedPoints(matches, kpSrc, kpDst);
+  std::cout << "Calc Pose" << std::endl;
+  std::cout << he.calcPose(H, src.cameraParameter_.K());
 
   return Pose();
 }

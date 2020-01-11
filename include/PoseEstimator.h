@@ -28,9 +28,11 @@ public:
                          std::vector<cv::Point2f> &srcPoints,
                          const std::vector<cv::Point2f> &dstPoints) = 0;
 
-  virtual Pose calcPose(const cv::Mat &H, const cv::Mat &K,
-                        const std::vector<cv::Point2f> &src,
-                        const std::vector<cv::Point2f> &dst) const = 0;
+  virtual Pose calcPose(const cv::Mat &HorF, const cv::Mat &K) = 0;
+
+  std::pair<cv::Mat, cv::Mat> validatePose(
+    const std::vector<cv::Mat> &rotations,
+    const std::vector<cv::Mat> &translations, const cv::Mat &K);
 
 protected:
   size_t ransacN_;
