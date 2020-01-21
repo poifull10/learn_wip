@@ -16,8 +16,31 @@ jobs:
             cmake ..
             make
 
+  test:
+    docker:
+      - image: poifull10/learn_wip
+    steps:
+      - checkout
+
+      - run:
+          name: build
+          command: |
+            git submodule update --init
+            mkdir build
+            cd build
+            cmake ..
+            make
       - run:
           name: test
           command: |
             cd build
             ./tests/tester
+
+workflows:
+  version: 2
+  build-test-and-run:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build

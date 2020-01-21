@@ -2,6 +2,7 @@
 #include <opencv2/opencv.hpp>
 
 #include "FeatureExtractor.h"
+#include "Frame.h"
 #include "Image.h"
 #include "Pose.h"
 
@@ -11,7 +12,7 @@ class PoseInitializer
 {
 public:
   PoseInitializer() : featureExtractor_(), ransac_n_(30) {}
-  Pose operator()(const Image &src, const Image &dst) const;
+  Pose operator()(Frame &src, Frame &dst) const;
 
 private:
   FeatureExtractor featureExtractor_;

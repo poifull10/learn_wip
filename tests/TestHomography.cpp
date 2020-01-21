@@ -51,7 +51,7 @@ TEST(HomographyEstimator, test_evaluate)
   const auto H = he.calculate(src, dst);
   float score = he.evaluate(H, src, dst);
 
-  EXPECT_FLOAT_EQ(score, 0.f);
+  EXPECT_NEAR(score, 5.99f * 8, 1e-3);
 }
 
 TEST(HomographyEstimator, test_getPose)

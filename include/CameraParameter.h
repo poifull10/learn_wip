@@ -30,8 +30,14 @@ public:
   PinholeCameraParameter& operator=(const PinholeCameraParameter& pcp) =
     default;
 
-  cv::Mat K() const { return K_; }
-  std::tuple<float, float, float, float> distCoeff() const { return {k1_, k2_, p1_, p2_}; }
+  cv::Mat K() const
+  {
+    return (cv::Mat_<float>(3, 3) << fx_, 0, cx_, 0, fy_, cy_, 0, 0, 1);
+  }
+  std::tuple<float, float, float, float> distCoeff() const
+  {
+    return {k1_, k2_, p1_, p2_};
+  }
 
 private:
   cv::Mat K_;

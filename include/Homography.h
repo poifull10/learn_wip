@@ -7,7 +7,7 @@ namespace wip
 class HomographyEstimator : public PoseEstimator
 {
 public:
-  HomographyEstimator(size_t ransacN = 30) : PoseEstimator(ransacN_) {}
+  HomographyEstimator(size_t ransacN = 30) : PoseEstimator(ransacN) {}
 
   /**
    *  @return double matrix
@@ -16,9 +16,9 @@ public:
                     const std::vector<cv::Point2f> &dstPoints) const override;
 
   float evaluate(const cv::Mat &H, std::vector<cv::Point2f> &srcPoints,
-                 const std::vector<cv::Point2f> &dstPoints) const override;
+                 const std::vector<cv::Point2f> &dstPoints) override;
 
-  Pose getPose(const cv::Mat &H) const override;
+  Pose calcPose(const cv::Mat &H, const cv::Mat &K) override;
 
 private:
   float evalFunc(const float val) const;
