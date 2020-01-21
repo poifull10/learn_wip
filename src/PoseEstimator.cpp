@@ -127,9 +127,11 @@ std::pair<cv::Mat, cv::Mat> PoseEstimator::validatePose(
       cv::Mat u, w, vt;
       cv::SVD::compute(A, w, u, vt, cv::SVD::MODIFY_A | cv::SVD::FULL_UV);
       cv::Mat x3D = vt.row(3).t();
+      std::cout << x3D << std::endl;
+      cv::Mat x3DHomo = x3D / x3D.at<float>(3);
+      std::cout << x3DHomo << std::endl;
       x3D = x3D.rowRange(0, 3) / x3D.at<float>(3);
 
-      std::cout << x3D << std::endl;
       const cv::Mat reconstructedPoint = x3D;
 
       if (!checkRules(reconstructedPoint, rotations[i], translations[i]))
@@ -137,10 +139,12 @@ std::pair<cv::Mat, cv::Mat> PoseEstimator::validatePose(
         break;
       }
 
-      const cv::Mat projectedPoint1 =
-        P1 * reconstructedPoint / (reconstructedPoint * x3D).col(2);
-      const cv::Mat projectedPoint2 =
-        P2 * reconstructedPoint / (reconstructedPoint * x3D).col(2);
+      std::cout << P1 << std::endl;
+      const cv::Mat projectedPoint1 = P1 * x3DHomo / (P1 * x3DHomo).col(2);
+      const cv::Mat projectedPoint2 = P2 * x3DHomo / (P2 * x3DHomo).col(2);
+
+      std::cout << projectedPoint1 << std::endl;
+      std::cout << projectedPoint2 << std::endl;
 
       const auto x1 = projectedPoint1.at<float>(0, 0);
       const auto y1 = projectedPoint1.at<float>(1, 0);
