@@ -26,6 +26,8 @@ jobs:
           name: build
           command: |
             git submodule update --init
+            git lfs install
+            git lfs pull
             mkdir build
             cd build
             cmake ..
