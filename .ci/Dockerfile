@@ -16,7 +16,7 @@ RUN mkdir /build && cd /build && git clone https://github.com/opencv/opencv.git 
 
 RUN apt-get install -y --no-install-recommends \
   libboost-all-dev gcc-8 g++-8 \
-  git-lfs
+  git-lfs ssh
 
 ENV CC /usr/bin/gcc-8
 
