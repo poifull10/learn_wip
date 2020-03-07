@@ -1,12 +1,11 @@
 #include <boost/format.hpp>
 #include <boost/program_options.hpp>
 #include <opencv2/opencv.hpp>
+#include <string>
 
 #include "Dataset.h"
 #include "FeatureExtractor.h"
 #include "PoseInitializer.h"
-
-#include <string>
 
 int main(int argc, char** argv)
 {
@@ -37,20 +36,21 @@ int main(int argc, char** argv)
   if (vm.count("dir"))
   {
     const auto dataDir = vm["dir"].as<std::string>();
-    wip::Dataset dataset(dataDir, 3);
+    wip::Dataset dataset(dataDir, 55);
     std::cout << dataset.size() << std::endl;
 
     wip::FeatureExtractor fe;
     size_t i = 0;
-    // draw keypoints
-    for (const auto& frame : dataset)
+    if (vm.count("debug"))
     {
-      const auto [keypoints, desc] = fe(frame->image().data());
-      if (vm.count("debug"))
+      // draw keypoints
+      for (const auto& frame : dataset)
       {
+        const auto [keypoints, desc] = fe(frame->image().data());
+
         cv::Mat img = frame->image().data();
         cv::drawKeypoints(img, keypoints, img, cv::Scalar(0, 255, 0));
-        const std::string s = (boost::format("%04d.png") % i).str();
+        const std::string s = (boost::format("%04d.png") % (i + 1)).str();
         std::cout << "Writing: " << s << std::endl;
         cv::imwrite(s, img);
         i++;
@@ -58,10 +58,11 @@ int main(int argc, char** argv)
     }
 
     // estimate camera poses
-    for (size_t i = 0; i < dataset.size() - 1; i++)
+    for (size_t i = 0; i < 1; i++)
     {
       wip::PoseInitializer pi;
-      const auto pose = pi(*dataset[i], *dataset[i + 1]);
+      const auto pose = pi(*dataset[i], *dataset[i + 50]);
+      std::cout << pose << std::endl;
     }
   }
   return 0;
