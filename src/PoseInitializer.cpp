@@ -1,11 +1,13 @@
 #include "PoseInitializer.h"
+
+#include <cassert>
+#include <numeric>
+
+#include "FeatureMatcher.h"
 #include "FundamentalMatrix.h"
 #include "Homography.h"
 #include "OpenCVUtils.h"
 #include "RandomSampler.h"
-
-#include <cassert>
-#include <numeric>
 
 namespace wip
 {
@@ -14,9 +16,8 @@ Pose PoseInitializer::operator()(Frame &src, Frame &dst) const
   const auto [kpSrc, dsSrc] = featureExtractor_(src.image());
   const auto [kpDst, dsDst] = featureExtractor_(dst.image());
 
-  std::vector<cv::DMatch> matches;
-  const auto dm = cv::DescriptorMatcher::create("BruteForce-Hamming");
-  dm->match(dsSrc, dsDst, matches);
+  wip::FeatureMatcher fm;
+  const auto matches = fm(dsSrc, dsDst);
 
   std::cout << matches.size() << " matches found" << std::endl;
 
@@ -39,10 +40,13 @@ Pose PoseInitializer::operator()(Frame &src, Frame &dst) const
   // std::cout << he.calcPose();
   const auto [matchedSrc, matchedDst] =
     wip::getMatchedPoints(matches, kpSrc, kpDst);
-  std::cout << "Calc Pose" << std::endl;
-  std::cout << he.calcPose(H, src.cameraParameter_.K());
 
-  return Pose();
+  std::cout << H << std::endl;
+  std::cout << src.cameraParameter_.K() << std::endl;
+
+  const auto pose = he.calcPose(H, src.cameraParameter_.K());
+
+  return pose;
 }
 
 } // namespace wip

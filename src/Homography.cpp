@@ -10,9 +10,10 @@ cv::Mat HomographyEstimator::calculate(
   return cv::findHomography(srcPoints, dstPoints);
 }
 
-float HomographyEstimator::evaluate(const cv::Mat &H,
-                                    std::vector<cv::Point2f> &srcPoints,
-                                    const std::vector<cv::Point2f> &dstPoints)
+std::tuple<float, std::vector<std::pair<cv::Point2f, cv::Point2f>>>
+HomographyEstimator::evaluate(const cv::Mat &H,
+                              std::vector<cv::Point2f> &srcPoints,
+                              const std::vector<cv::Point2f> &dstPoints)
 {
   const auto srcPoints_ = H.inv() * convertToPoint2D(dstPoints);
   const auto dstPoints_ = H * convertToPoint2D(srcPoints);
@@ -20,6 +21,8 @@ float HomographyEstimator::evaluate(const cv::Mat &H,
   assert(srcPoints.size() == dstPoints.size());
   assert(srcPoints.size() == srcPoints_.size());
   assert(srcPoints.size() == dstPoints_.size());
+
+  std::vector<std::pair<cv::Point2f, cv::Point2f>> inliners;
 
   float score = 0;
   for (size_t i = 0; i < srcPoints.size(); i++)
@@ -31,12 +34,12 @@ float HomographyEstimator::evaluate(const cv::Mat &H,
 
     if (srcScore > 0 && dstScore > 0)
     {
-      inliners_.push_back(std::make_pair(srcPoints[i], dstPoints[i]));
+      inliners.push_back(std::make_pair(srcPoints[i], dstPoints[i]));
     }
     score += srcScore + dstScore;
   }
 
-  return score;
+  return {score, inliners};
 }
 
 float HomographyEstimator::evalFunc(const float val) const
@@ -56,17 +59,8 @@ Pose HomographyEstimator::calcPose(const cv::Mat &H, const cv::Mat &K)
   std::vector<cv::Mat> rotations, translations, normals;
   const auto solutions =
     cv::decomposeHomographyMat(H, K, rotations, translations, normals);
-
-  std::cout << "Decomposited." << std::endl;
-
   const auto [R, t] = validatePose(rotations, translations, K);
-
-  std::cout << "Hypothesis: " << std::endl;
-
-  std::cout << R << std::endl;
-  std::cout << t << std::endl;
-
-  return Pose();
+  return Pose(R, t);
 }
 
 } // namespace wip

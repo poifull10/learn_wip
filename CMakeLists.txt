@@ -9,6 +9,7 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 find_package(OpenCV REQUIRED)
+find_package(Eigen3 REQUIRED)
 
 add_subdirectory(third_party)
 add_subdirectory(src)

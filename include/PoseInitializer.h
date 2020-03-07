@@ -11,7 +11,7 @@ namespace wip
 class PoseInitializer
 {
 public:
-  PoseInitializer() : featureExtractor_(), ransac_n_(30) {}
+  PoseInitializer() : featureExtractor_(), ransac_n_(100) {}
   Pose operator()(Frame &src, Frame &dst) const;
 
 private:

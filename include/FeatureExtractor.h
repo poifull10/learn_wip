@@ -1,24 +1,25 @@
 #pragma once
 
-#include <opencv2/opencv.hpp>
+#include <Image.h>
 
 #include <array>
 #include <memory>
+#include <opencv2/opencv.hpp>
 #include <utility>
 #include <vector>
-
-#include <Image.h>
 namespace wip
 {
 class FeatureExtractor
 {
 public:
-  FeatureExtractor(int FASTThresh = 30) : FASTThresh_(FASTThresh) {}
+  FeatureExtractor() : featureNum_(300) {}
 
   std::pair<std::vector<cv::KeyPoint>, cv::Mat> operator()(
     const Image& image) const;
 
+  size_t featureNum() const { return featureNum_; }
+
 private:
-  int FASTThresh_;
+  size_t featureNum_;
 };
 } // namespace wip

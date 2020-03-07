@@ -1,9 +1,9 @@
 #include <gtest/gtest.h>
 
-#include "Homography.h"
-
 #include <iostream>
 #include <string>
+
+#include "Homography.h"
 
 namespace wip
 {
@@ -49,7 +49,7 @@ TEST(HomographyEstimator, test_evaluate)
   dst.emplace_back(1.89840739, 1.11539421);
 
   const auto H = he.calculate(src, dst);
-  float score = he.evaluate(H, src, dst);
+  const auto [score, _] = he.evaluate(H, src, dst);
 
   EXPECT_NEAR(score, 5.99f * 8, 1e-3);
 }

@@ -1,8 +1,7 @@
 #include "Dataset.h"
 
-#include <cppglob/glob.hpp>
-
 #include <algorithm>
+#include <cppglob/glob.hpp>
 #include <vector>
 
 namespace wip
@@ -12,14 +11,14 @@ Dataset::Dataset(const std::filesystem::path& path, size_t fileNumLimit)
 {
   namespace fs = std::filesystem;
 
-  std::vector<fs::path> calibs = cppglob::glob(path / "cam0.json", true);
+  std::vector<fs::path> calibs = cppglob::glob(path / "cam.json", true);
   if (calibs.size() > 0)
   {
     std::cout << "Loading a calibration file: " << calibs[0] << std::endl;
     cameraParameter_ = PinholeCameraParameter(calibs[0]);
   }
 
-  std::vector<fs::path> files = cppglob::glob(path / "cam0/*.png", true);
+  std::vector<fs::path> files = cppglob::glob(path / "*.png", true);
   std::sort(files.begin(), files.end());
   size_t i = 1;
   for (const auto& f : files)

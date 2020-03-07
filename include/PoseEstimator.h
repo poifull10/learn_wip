@@ -1,12 +1,11 @@
 #pragma once
 
 #include <opencv2/opencv.hpp>
+#include <utility>
+#include <vector>
 
 #include "Point.h"
 #include "Pose.h"
-
-#include <utility>
-#include <vector>
 
 namespace wip
 {
@@ -24,9 +23,9 @@ public:
     const std::vector<cv::Point2f> &srcPoints,
     const std::vector<cv::Point2f> &dstPoints) const = 0;
 
-  virtual float evaluate(const cv::Mat &HorF,
-                         std::vector<cv::Point2f> &srcPoints,
-                         const std::vector<cv::Point2f> &dstPoints) = 0;
+  virtual std::tuple<float, std::vector<std::pair<cv::Point2f, cv::Point2f>>>
+  evaluate(const cv::Mat &HorF, std::vector<cv::Point2f> &srcPoints,
+           const std::vector<cv::Point2f> &dstPoints) = 0;
 
   virtual Pose calcPose(const cv::Mat &HorF, const cv::Mat &K) = 0;
 

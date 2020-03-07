@@ -1,10 +1,10 @@
-#include <opencv2/opencv.hpp>
-
 #include "PoseEstimator.h"
-#include "RandomSampler.h"
 
 #include <numeric>
+#include <opencv2/opencv.hpp>
 #include <utility>
+
+#include "RandomSampler.h"
 
 namespace wip
 {
@@ -40,15 +40,18 @@ std::pair<float, cv::Mat> PoseEstimator::estimate(
       evalDstMatchedPoints.push_back(dstKeyPoints[match.queryIdx].pt);
     }
 
-    const auto score_ =
+    const auto [score_, inliners] =
       evaluate(H_, evalSrcMatchedPoints, evalDstMatchedPoints);
     if (score < score_)
     {
+      std::cout << "inliners " << inliners.size() << std::endl;
+      std::cout << "score " << score_ << std::endl;
+      std::cout << H_ << std::endl;
       score = score_;
       H = H_;
+      inliners_ = inliners;
     }
   }
-
   return {score, H};
 }
 
@@ -70,7 +73,7 @@ bool checkRules(const cv::Mat &p3d, const cv::Mat &R, const cv::Mat &t)
   t_.convertTo(t_, CV_32F);
 
   cv::Mat O1 = cv::Mat::zeros(3, 1, CV_32F);
-  cv::Mat O2 = -R_.t() * t_;
+  cv::Mat O2 = -R_ * O1 + t_;
   O2.convertTo(O2, CV_32F);
 
   cv::Mat normal1 = reconstructedPoint1 - O1;
@@ -79,19 +82,15 @@ bool checkRules(const cv::Mat &p3d, const cv::Mat &R, const cv::Mat &t)
   auto parallax =
     normal1.dot(normal2) / (cv::norm(normal1) * cv::norm(normal2));
 
-  if (parallax < 0.99998 && reconstructedPoint1.at<float>(2, 0) < 0)
+  if (parallax < 0.99 && reconstructedPoint1.at<float>(2, 0) < 0)
   {
     return false;
   }
 
   cv::Mat reconstructedPoint2 = R_ * reconstructedPoint1 + t_;
   reconstructedPoint2.convertTo(reconstructedPoint2, CV_32F);
-  normal1 = reconstructedPoint2 - O1;
-  normal2 = reconstructedPoint2 - O2;
 
-  parallax = normal1.dot(normal2) / (cv::norm(normal1) * cv::norm(normal2));
-
-  if (parallax < 0.99998 && reconstructedPoint2.at<float>(2, 0) < 0)
+  if (parallax < 0.99 && reconstructedPoint2.at<float>(2, 0) < 0)
   {
     return false;
   }
@@ -107,6 +106,8 @@ std::pair<cv::Mat, cv::Mat> PoseEstimator::validatePose(
   cv::Mat R, t;
   for (size_t i = 0; i < rotations.size(); i++)
   {
+    R = rotations[i];
+    t = translations[i];
     cv::Mat P1 = compositeProjectionMatrix(K, cv::Mat::eye(3, 3, CV_32F),
                                            cv::Mat::zeros(3, 1, CV_32F));
     cv::Mat P2 = compositeProjectionMatrix(K, rotations[i], translations[i]);
@@ -115,7 +116,6 @@ std::pair<cv::Mat, cv::Mat> PoseEstimator::validatePose(
 
     for (size_t j = 0; j < inliners_.size(); j++)
     {
-      std::cout << j << std::endl;
       const auto [src, dst] = inliners_[j];
       cv::Mat A(4, 4, CV_32F);
 
@@ -127,9 +127,7 @@ std::pair<cv::Mat, cv::Mat> PoseEstimator::validatePose(
       cv::Mat u, w, vt;
       cv::SVD::compute(A, w, u, vt, cv::SVD::MODIFY_A | cv::SVD::FULL_UV);
       cv::Mat x3D = vt.row(3).t();
-      std::cout << x3D << std::endl;
       cv::Mat x3DHomo = x3D / x3D.at<float>(3);
-      std::cout << x3DHomo << std::endl;
       x3D = x3D.rowRange(0, 3) / x3D.at<float>(3);
 
       const cv::Mat reconstructedPoint = x3D;
@@ -139,12 +137,10 @@ std::pair<cv::Mat, cv::Mat> PoseEstimator::validatePose(
         break;
       }
 
-      std::cout << P1 << std::endl;
-      const cv::Mat projectedPoint1 = P1 * x3DHomo / (P1 * x3DHomo).col(2);
-      const cv::Mat projectedPoint2 = P2 * x3DHomo / (P2 * x3DHomo).col(2);
-
-      std::cout << projectedPoint1 << std::endl;
-      std::cout << projectedPoint2 << std::endl;
+      const cv::Mat projectedPoint1 =
+        P1 * x3DHomo / cv::Mat(P1 * x3DHomo).at<float>(2, 0);
+      const cv::Mat projectedPoint2 =
+        P2 * x3DHomo / cv::Mat(P2 * x3DHomo).at<float>(2, 0);
 
       const auto x1 = projectedPoint1.at<float>(0, 0);
       const auto y1 = projectedPoint1.at<float>(1, 0);

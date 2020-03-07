@@ -61,7 +61,7 @@ TEST(FundamentalMatrix, test_evaluate)
 
   const auto F = fme.calculate(src, dst);
 
-  float score = fme.evaluate(F, src, dst);
+  const auto [score, _] = fme.evaluate(F, src, dst);
 
   EXPECT_GT(score, 5.99f * 16 / 2);
 }

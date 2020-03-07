@@ -15,7 +15,7 @@ RUN mkdir /build && cd /build && git clone https://github.com/opencv/opencv.git 
   ninja && ninja install
 
 RUN apt-get install -y --no-install-recommends \
-  libboost-all-dev gcc-8 g++-8 \
+  libboost-all-dev libeigen3-dev gcc-8 g++-8 \
   git-lfs ssh
 
 ENV CC /usr/bin/gcc-8

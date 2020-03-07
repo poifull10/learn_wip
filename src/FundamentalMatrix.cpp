@@ -1,4 +1,5 @@
 #include "FundamentalMatrix.h"
+
 #include "RandomSampler.h"
 
 namespace wip
@@ -11,13 +12,19 @@ cv::Mat FundamentalMatrixEstimator::calculate(
   return cv::findFundamentalMat(srcPoints, dstPoints, cv::FM_8POINT);
 }
 
-float FundamentalMatrixEstimator::evaluate(
-  const cv::Mat &F, std::vector<cv::Point2f> &srcPoints,
-  const std::vector<cv::Point2f> &dstPoints)
+std::tuple<float, std::vector<std::pair<cv::Point2f, cv::Point2f>>>
+FundamentalMatrixEstimator::evaluate(const cv::Mat &F,
+                                     std::vector<cv::Point2f> &srcPoints,
+                                     const std::vector<cv::Point2f> &dstPoints)
 {
   assert(srcPoints.size() == dstPoints.size());
+  std::vector<std::pair<cv::Point2f, cv::Point2f>> inliners;
 
   float score = 0;
+  if (F.size().width == 0)
+  {
+    return {score, {}};
+  }
   for (size_t i = 0; i < srcPoints.size(); i++)
   {
     float f0 = F.at<double>(cv::Point(0, 0));
@@ -48,13 +55,12 @@ float FundamentalMatrixEstimator::evaluate(
 
     if (srcScore > 0 && dstScore > 0)
     {
-      inliners_.push_back(std::make_pair(srcPoints[i], dstPoints[i]));
+      inliners.push_back(std::make_pair(srcPoints[i], dstPoints[i]));
     }
-
     score += srcScore + dstScore;
   }
 
-  return score;
+  return {score, inliners};
 }
 
 float FundamentalMatrixEstimator::evalFunc(const float val) const
