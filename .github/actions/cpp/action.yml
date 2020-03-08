@@ -1,0 +1,13 @@
+name: "docker_run"
+description: "use learn wip docker image"
+author: "poifull10"
+
+inputs:
+  run-command: # id of input
+    description: "Command to run"
+    required: true
+runs:
+  using: "Docker"
+  image: "poifull10/learn_wip"
+  args:
+    - ${{inputs.run-command}}

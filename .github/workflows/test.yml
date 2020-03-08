@@ -1,0 +1,17 @@
+name: test
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Test
+        uses: ./.github/actions/cpp
+        with:
+          run-command: ".ci/test.sh"
+        env:
+          FILEID: ${{ secrets.DATASET_FILEID }}

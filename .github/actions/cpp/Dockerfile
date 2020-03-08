@@ -1,4 +1,10 @@
-FROM ubuntu:bionic
+FROM ubuntu:disco
+
+LABEL "name"="learn_wip" \
+  "maintainer"="poifull10 <poifull10@gmail.com>" \
+  "com.github.actions.icon"="code" \
+  "com.github.actions.color"="green-dark" \
+  "com.github.actions.name"="cpp"
 
 ENV DEBIAN_FRONTEND noninteractive
 
