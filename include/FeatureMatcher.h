@@ -11,7 +11,13 @@ class FeatureMatcher
 public:
   FeatureMatcher() {}
 
-  std::vector<cv::DMatch> operator()(const cv::Mat& srcDesc,
-                                     const cv::Mat& dstDesc) const;
+  std::vector<std::tuple<cv::KeyPoint, cv::KeyPoint>> operator()(
+    const std::tuple<std::vector<cv::KeyPoint>, cv::Mat>& src,
+    const std::tuple<std::vector<cv::KeyPoint>, cv::Mat>& dst);
+
+  size_t size() const { return matches_.size(); }
+
+private:
+  std::vector<cv::DMatch> matches_;
 };
 } // namespace wip

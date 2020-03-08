@@ -17,11 +17,11 @@ Pose PoseInitializer::operator()(Frame &src, Frame &dst) const
   const auto [kpDst, dsDst] = featureExtractor_(dst.image());
 
   wip::FeatureMatcher fm;
-  const auto matches = fm(dsSrc, dsDst);
+  const auto matched = fm({kpSrc, dsSrc}, {kpDst, dsDst});
 
-  std::cout << matches.size() << " matches found" << std::endl;
+  std::cout << matched.size() << " matches found" << std::endl;
 
-  if (matches.size() < 8)
+  if (matched.size() < 8)
   {
     std::cout << "Initialization is failed, retry initialization." << std::endl;
     return Pose();
@@ -30,17 +30,14 @@ Pose PoseInitializer::operator()(Frame &src, Frame &dst) const
   wip::HomographyEstimator he(ransac_n_);
   wip::FundamentalMatrixEstimator fme(ransac_n_);
 
-  const auto [hScore, H] = he.estimate(matches, kpSrc, kpDst);
-  const auto [fScore, F] = fme.estimate(matches, kpSrc, kpDst);
+  const auto [hScore, H] = he.estimate(matched);
+  const auto [fScore, F] = fme.estimate(matched);
 
   // Select H, F
   std::cout << "hScore " << hScore << std::endl;
   std::cout << "fScore " << fScore << std::endl;
 
   // std::cout << he.calcPose();
-  const auto [matchedSrc, matchedDst] =
-    wip::getMatchedPoints(matches, kpSrc, kpDst);
-
   std::cout << H << std::endl;
   std::cout << src.cameraParameter_.K() << std::endl;
 

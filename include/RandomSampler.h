@@ -15,8 +15,7 @@ public:
     std::iota(labels_.begin(), labels_.end(), 0);
   }
 
-  std::pair<std::vector<size_t>, std::vector<size_t>> sample(
-    size_t nSamples) const;
+  std::vector<size_t> sample(size_t nSamples);
 
 private:
   size_t nMaxSamples_;
