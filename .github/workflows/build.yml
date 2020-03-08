@@ -1,13 +1,13 @@
-name: Build
+name: build
 
-on:
-  push:
-    branches: [master]
-  pull_request:
-    branches: [master]
+on: [push]
 
-runs:
-  using: "Docker"
-  image: "../.ci/Dockerfile"
-  args:
-    - "../.ci/build.sh"
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: build
+    steps:
+      - name: "build-in-docker"
+        uses: ../actions/docker_action@v1
+        with:
+          run-command: ".ci/build.sh"
