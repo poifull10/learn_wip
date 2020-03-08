@@ -1,0 +1,17 @@
+name: "docker_action"
+description: "use learn wip docker image"
+
+inputs:
+  run-command: # id of input
+    description: "Command to run"
+    required: true
+
+outputs:
+  time:
+    description: "The time to use this action"
+
+runs:
+  using: "Docker"
+  image: "../../.ci/Dockerfile"
+  args:
+    - "../../${{ inputs.run-command }}"
