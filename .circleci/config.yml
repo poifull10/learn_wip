@@ -23,20 +23,9 @@ jobs:
       - checkout
 
       - run:
-          name: build
-          command: |
-            git submodule update --init
-            git lfs install
-            git lfs pull
-            mkdir build
-            cd build
-            cmake ..
-            make
-      - run:
           name: test
           command: |
-            cd build
-            ./tests/tester
+            .ci/test.sh
 
 workflows:
   version: 2
