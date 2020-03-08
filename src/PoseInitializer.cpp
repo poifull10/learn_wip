@@ -6,18 +6,17 @@
 #include "FeatureMatcher.h"
 #include "FundamentalMatrix.h"
 #include "Homography.h"
-#include "OpenCVUtils.h"
 #include "RandomSampler.h"
 
 namespace wip
 {
 Pose PoseInitializer::operator()(Frame &src, Frame &dst) const
 {
-  const auto [kpSrc, dsSrc] = featureExtractor_(src.image());
-  const auto [kpDst, dsDst] = featureExtractor_(dst.image());
+  const auto srcKptDsc = featureExtractor_(src.image());
+  const auto dstKptDsc = featureExtractor_(dst.image());
 
   wip::FeatureMatcher fm;
-  const auto matched = fm({kpSrc, dsSrc}, {kpDst, dsDst});
+  const auto matched = fm(srcKptDsc, dstKptDsc);
 
   std::cout << matched.size() << " matches found" << std::endl;
 
