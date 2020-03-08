@@ -5,7 +5,7 @@
 #include <array>
 #include <memory>
 #include <opencv2/opencv.hpp>
-#include <utility>
+#include <tuple>
 #include <vector>
 namespace wip
 {
@@ -14,7 +14,7 @@ class FeatureExtractor
 public:
   FeatureExtractor() : featureNum_(300) {}
 
-  std::pair<std::vector<cv::KeyPoint>, cv::Mat> operator()(
+  std::tuple<std::vector<cv::KeyPoint>, cv::Mat> operator()(
     const Image& image) const;
 
   size_t featureNum() const { return featureNum_; }

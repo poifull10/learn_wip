@@ -3,7 +3,7 @@
 namespace wip
 {
 
-std::pair<std::vector<cv::KeyPoint>, cv::Mat> FeatureExtractor::operator()(
+std::tuple<std::vector<cv::KeyPoint>, cv::Mat> FeatureExtractor::operator()(
   const Image& image) const
 {
   const auto detector = cv::ORB::create(featureNum_); //(150, 1.25f, 30);

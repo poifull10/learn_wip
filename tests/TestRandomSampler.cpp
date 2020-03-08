@@ -5,14 +5,11 @@
 TEST(RandomSampler, test_sample)
 {
   wip::RandomSampler sampler(10);
-  const auto [samples, others] = sampler.sample(3);
+  const auto samples = sampler.sample(3);
 
   EXPECT_EQ(samples.size(), 3);
-  EXPECT_EQ(others.size(), 7);
 
-  std::vector<size_t> actual;
-  actual.insert(actual.end(), samples.begin(), samples.end());
-  actual.insert(actual.end(), others.begin(), others.end());
+  auto actual = sampler.sample(10);
   std::sort(actual.begin(), actual.end());
 
   std::vector<size_t> expected(10);

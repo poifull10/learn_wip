@@ -9,35 +9,32 @@
 namespace wip
 {
 std::pair<float, cv::Mat> PoseEstimator::estimate(
-  const std::vector<cv::DMatch> &matches,
-  const std::vector<cv::KeyPoint> &srcKeyPoints,
-  const std::vector<cv::KeyPoint> &dstKeyPoints)
+  const std::vector<std::tuple<cv::KeyPoint, cv::KeyPoint>> &matchedKeyPoints)
 {
   float score = -std::numeric_limits<float>::max();
   cv::Mat H;
 
   for (size_t i = 0; i < ransacN_; i++)
   {
-    RandomSampler rs(matches.size());
-    const auto [eightIndices, otherIndices] = rs.sample(8);
+    RandomSampler rs(matchedKeyPoints.size());
+    const auto eightIndices = rs.sample(8);
 
     assert(eightIndices.size() == 8);
     std::vector<cv::Point2f> srcMatchedPoints, dstMatchedPoints;
     for (const auto &id : eightIndices)
     {
-      const auto srcInd = matches[id].trainIdx;
-      const auto dstInd = matches[id].queryIdx;
-      srcMatchedPoints.push_back(srcKeyPoints[srcInd].pt);
-      dstMatchedPoints.push_back(dstKeyPoints[dstInd].pt);
+      const auto [srckpt, dstkpt] = matchedKeyPoints[id];
+      srcMatchedPoints.push_back(srckpt.pt);
+      dstMatchedPoints.push_back(dstkpt.pt);
     }
 
     const auto H_ = calculate(srcMatchedPoints, dstMatchedPoints);
 
     std::vector<cv::Point2f> evalSrcMatchedPoints, evalDstMatchedPoints;
-    for (const auto &match : matches)
+    for (const auto &[srckpt, dstkpt] : matchedKeyPoints)
     {
-      evalSrcMatchedPoints.push_back(srcKeyPoints[match.trainIdx].pt);
-      evalDstMatchedPoints.push_back(dstKeyPoints[match.queryIdx].pt);
+      evalSrcMatchedPoints.push_back(srckpt.pt);
+      evalDstMatchedPoints.push_back(dstkpt.pt);
     }
 
     const auto [score_, inliners] =

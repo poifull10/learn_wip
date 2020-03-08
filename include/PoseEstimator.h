@@ -15,9 +15,7 @@ public:
   PoseEstimator(size_t ransacN = 30) : ransacN_(ransacN), inliners_() {}
 
   std::pair<float, cv::Mat> estimate(
-    const std::vector<cv::DMatch> &matches,
-    const std::vector<cv::KeyPoint> &srcKeyPoints,
-    const std::vector<cv::KeyPoint> &dstKeyPoints);
+    const std::vector<std::tuple<cv::KeyPoint, cv::KeyPoint>> &keyPoints);
 
   virtual cv::Mat calculate(
     const std::vector<cv::Point2f> &srcPoints,
