@@ -1,5 +1,7 @@
 # learn_wip
 
-[![CircleCI](https://circleci.com/gh/poifull10/learn_wip/tree/master.svg?style=svg)](https://circleci.com/gh/poifull10/learn_wip/tree/master)
+![Actions Status](https://github.com/poifull10/learn_wip/workflows/build_debug/badge.svg)
+![Actions Status](https://github.com/poifull10/learn_wip/workflows/build_release/badge.svg)
+![Actions Status](https://github.com/poifull10/learn_wip/workflows/test/badge.svg)
 
 wip.
