@@ -18,7 +18,7 @@ std::vector<std::tuple<cv::KeyPoint, cv::KeyPoint>> FeatureMatcher::operator()(
 
   for (const auto& match : matches_)
   {
-    keypoints.push_back({src_kpts[match.trainIdx], dst_kpts[match.queryIdx]});
+    keypoints.emplace_back(src_kpts[match.trainIdx], dst_kpts[match.queryIdx]);
   }
 
   return keypoints;

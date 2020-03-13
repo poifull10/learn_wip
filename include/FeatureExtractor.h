@@ -1,9 +1,6 @@
 #pragma once
 
 #include <Image.h>
-
-#include <array>
-#include <memory>
 #include <opencv2/opencv.hpp>
 #include <tuple>
 #include <vector>

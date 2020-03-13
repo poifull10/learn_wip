@@ -13,7 +13,7 @@ class PinholeCameraParameter
 {
 public:
   PinholeCameraParameter()
-    : K_(cv::Size(3, 3), CV_32F)
+    : K_(std::move(cv::Mat::eye(3, 3, CV_32F)))
     , fx_()
     , fy_()
     , cx_()

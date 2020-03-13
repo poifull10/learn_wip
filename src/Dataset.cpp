@@ -24,7 +24,7 @@ Dataset::Dataset(const std::filesystem::path& path, size_t fileNumLimit)
   for (const auto& f : files)
   {
     std::cout << "Loading an image: " << f << std::endl;
-    frames_.push_back(std::make_shared<Frame>(f, cameraParameter_));
+    frames_.emplace_back(std::make_shared<Frame>(f, cameraParameter_));
     if (i == fileNumLimit)
     {
       break;
