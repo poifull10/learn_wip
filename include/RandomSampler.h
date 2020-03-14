@@ -4,14 +4,11 @@
 #include <utility>
 #include <vector>
 
-namespace wip
-{
-class RandomSampler
-{
+namespace wip {
+class RandomSampler {
 public:
   RandomSampler(size_t nMaxSamples)
-    : nMaxSamples_(nMaxSamples), labels_(nMaxSamples)
-  {
+    : nMaxSamples_(nMaxSamples), labels_(nMaxSamples) {
     std::iota(labels_.begin(), labels_.end(), 0);
   }
 

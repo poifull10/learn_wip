@@ -2,8 +2,7 @@
 
 #include "PoseEstimator.h"
 
-TEST(PoseEstimator, test_composite_projection_matrix)
-{
+TEST(PoseEstimator, test_composite_projection_matrix) {
   cv::Mat K = (cv::Mat_<float>(3, 3) << -1, -2, -3, -4, -5, -6, -7, -8, -9);
   cv::Mat R = (cv::Mat_<float>(3, 3) << 1, 2, 3, 4, 5, 6, 7, 8, 9);
   cv::Mat t = (cv::Mat_<float>(3, 1) << 10, 11, 12);

@@ -1,6 +1,3 @@
 #include "Frame.h"
 
-namespace wip
-{
-
-}
+namespace wip {}

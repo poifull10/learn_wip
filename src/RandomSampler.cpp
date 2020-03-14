@@ -4,10 +4,8 @@
 #include <algorithm>
 #include <random>
 
-namespace wip
-{
-std::vector<size_t> RandomSampler::sample(size_t nSamples)
-{
+namespace wip {
+std::vector<size_t> RandomSampler::sample(size_t nSamples) {
   auto labels = labels_;
   std::random_device seed_gen;
   std::mt19937 engine(seed_gen());

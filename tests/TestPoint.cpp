@@ -2,8 +2,7 @@
 
 #include "Point.h"
 
-TEST(Point, test_constructor)
-{
+TEST(Point, test_constructor) {
   std::vector<cv::Point2f> src;
   src.emplace_back(1, 2);
   src.emplace_back(2, 6);
@@ -19,8 +18,7 @@ TEST(Point, test_constructor)
   EXPECT_FLOAT_EQ(actual[2].y(), 0.3);
 }
 
-TEST(Point, test_mult)
-{
+TEST(Point, test_mult) {
   std::vector<cv::Point2f> src;
   src.emplace_back(1, 2);
   src.emplace_back(2, 6);
@@ -38,8 +36,7 @@ TEST(Point, test_mult)
   const auto src_ = wip::convertToPoint2D(src);
   const auto dst_ = H * src_;
 
-  for (size_t i = 0; i < dst_.size(); i++)
-  {
+  for (size_t i = 0; i < dst_.size(); i++) {
     EXPECT_NEAR(dst_[i].x(), dst[i].x, 1e-3);
     EXPECT_NEAR(dst_[i].y(), dst[i].y, 1e-3);
   }

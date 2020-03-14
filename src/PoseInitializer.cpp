@@ -8,26 +8,23 @@
 #include "Homography.h"
 #include "RandomSampler.h"
 
-namespace wip
-{
-Pose PoseInitializer::operator()(Frame &src, Frame &dst) const
-{
+namespace wip {
+std::optional<Pose> PoseInitializer::operator()(Frame &src, Frame &dst) const {
   const auto srcKptDsc = featureExtractor_(src.image());
   const auto dstKptDsc = featureExtractor_(dst.image());
 
-  wip::FeatureMatcher fm;
+  FeatureMatcher fm;
   const auto matched = fm(srcKptDsc, dstKptDsc);
 
   std::cout << matched.size() << " matches found" << std::endl;
 
-  if (matched.size() < 8)
-  {
+  if (matched.size() < 8) {
     std::cout << "Initialization is failed, retry initialization." << std::endl;
-    return Pose();
+    return std::nullopt;
   }
 
-  wip::HomographyEstimator he(ransac_n_);
-  wip::FundamentalMatrixEstimator fme(ransac_n_);
+  HomographyEstimator he(ransac_n_);
+  FundamentalMatrixEstimator fme(ransac_n_);
 
   const auto [hScore, H] = he.estimate(matched);
   const auto [fScore, F] = fme.estimate(matched);
@@ -35,10 +32,6 @@ Pose PoseInitializer::operator()(Frame &src, Frame &dst) const
   // Select H, F
   std::cout << "hScore " << hScore << std::endl;
   std::cout << "fScore " << fScore << std::endl;
-
-  // std::cout << he.calcPose();
-  std::cout << H << std::endl;
-  std::cout << src.cameraParameter_.K() << std::endl;
 
   const auto pose = he.calcPose(H, src.cameraParameter_.K());
 

@@ -5,8 +5,7 @@
 #include <filesystem>
 #include <iostream>
 
-TEST(CameraParameter, test_constructor)
-{
+TEST(CameraParameter, test_constructor) {
   std::string fname = "../tests/test_calib.json";
   wip::PinholeCameraParameter pcm(fname);
   const auto K = pcm.K();

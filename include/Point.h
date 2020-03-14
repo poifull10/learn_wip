@@ -5,21 +5,17 @@
 #include <optional>
 #include <vector>
 
-namespace wip
-{
-class Point2D
-{
+namespace wip {
+class Point2D {
 public:
   Point2D() = delete;
   Point2D(const cv::Point2f& point)
-    : point_(cv::Mat(point).reshape(1, 1)), point3_()
-  {
+    : point_(cv::Mat(point).reshape(1, 1)), point3_() {
     cv::convertPointsToHomogeneous(point_, point3_);
     point3_ = point3_.reshape(1, 1);
   }
 
-  Point2D(const cv::Mat& point) : point3_()
-  {
+  Point2D(const cv::Mat& point) : point3_() {
     point_ = point.reshape(1, 1);
     assert(point_.rows == 1);
     assert(point_.cols == 2);

@@ -7,8 +7,7 @@
 #include "FeatureExtractor.h"
 #include "PoseInitializer.h"
 
-int main(int argc, char** argv)
-{
+int main(int argc, char** argv) {
   namespace bopt = boost::program_options;
   bopt::options_description opt("Options");
   opt.add_options()("help,h", "show help")(
@@ -17,35 +16,28 @@ int main(int argc, char** argv)
 
   bopt::variables_map vm;
 
-  try
-  {
+  try {
     bopt::store(bopt::parse_command_line(argc, argv, opt), vm);
-  }
-  catch (const bopt::error_with_option_name& e)
-  {
+  } catch (const bopt::error_with_option_name& e) {
     std::cout << e.what() << std::endl;
   }
   bopt::notify(vm);
 
-  if (vm.count("help"))
-  {
+  if (vm.count("help")) {
     std::cout << opt << std::endl;
     return 0;
   }
 
-  if (vm.count("dir"))
-  {
+  if (vm.count("dir")) {
     const auto dataDir = vm["dir"].as<std::string>();
     wip::Dataset dataset(dataDir, 55);
     std::cout << dataset.size() << std::endl;
 
     wip::FeatureExtractor fe;
     size_t i = 0;
-    if (vm.count("debug"))
-    {
+    if (vm.count("debug")) {
       // draw keypoints
-      for (const auto& frame : dataset)
-      {
+      for (const auto& frame : dataset) {
         const auto [keypoints, desc] = fe(frame->image().data());
 
         cv::Mat img = frame->image().data();
@@ -58,11 +50,10 @@ int main(int argc, char** argv)
     }
 
     // estimate camera poses
-    for (size_t i = 0; i < 1; i++)
-    {
+    for (size_t i = 0; i < 1; i++) {
       wip::PoseInitializer pi;
       const auto pose = pi(*dataset[i], *dataset[i + 50]);
-      std::cout << pose << std::endl;
+      if (pose) { std::cout << *pose << std::endl; }
     }
   }
   return 0;

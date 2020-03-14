@@ -2,31 +2,24 @@
 
 #include "RandomSampler.h"
 
-namespace wip
-{
+namespace wip {
 
 cv::Mat FundamentalMatrixEstimator::calculate(
   const std::vector<cv::Point2f> &srcPoints,
-  const std::vector<cv::Point2f> &dstPoints) const
-{
+  const std::vector<cv::Point2f> &dstPoints) const {
   return cv::findFundamentalMat(srcPoints, dstPoints, cv::FM_8POINT);
 }
 
 std::tuple<float, std::vector<std::pair<cv::Point2f, cv::Point2f>>>
-FundamentalMatrixEstimator::evaluate(const cv::Mat &F,
-                                     std::vector<cv::Point2f> &srcPoints,
-                                     const std::vector<cv::Point2f> &dstPoints)
-{
+FundamentalMatrixEstimator::evaluate(
+  const cv::Mat &F, std::vector<cv::Point2f> &srcPoints,
+  const std::vector<cv::Point2f> &dstPoints) {
   assert(srcPoints.size() == dstPoints.size());
   std::vector<std::pair<cv::Point2f, cv::Point2f>> inliners;
 
   float score = 0;
-  if (F.size().width == 0)
-  {
-    return {score, {}};
-  }
-  for (size_t i = 0; i < srcPoints.size(); i++)
-  {
+  if (F.size().width == 0) { return {score, {}}; }
+  for (size_t i = 0; i < srcPoints.size(); i++) {
     float f0 = F.at<double>(cv::Point(0, 0));
     float f1 = F.at<double>(cv::Point(1, 0));
     float f2 = F.at<double>(cv::Point(2, 0));
@@ -53,8 +46,7 @@ FundamentalMatrixEstimator::evaluate(const cv::Mat &F,
     const auto dstScore = evalFunc((upperSqrtDstScore * upperSqrtDstScore) /
                                    (aDst * aDst + bDst * bDst));
 
-    if (srcScore > 0 && dstScore > 0)
-    {
+    if (srcScore > 0 && dstScore > 0) {
       inliners.push_back(std::make_pair(srcPoints[i], dstPoints[i]));
     }
     score += srcScore + dstScore;
@@ -63,20 +55,15 @@ FundamentalMatrixEstimator::evaluate(const cv::Mat &F,
   return {score, inliners};
 }
 
-float FundamentalMatrixEstimator::evalFunc(const float val) const
-{
+float FundamentalMatrixEstimator::evalFunc(const float val) const {
   const auto thresh = 3.84;
-  const auto gamma = 5.99;
-  if (val < thresh)
-  {
-    return gamma - val;
-  }
+  const auto gamma  = 5.99;
+  if (val < thresh) { return gamma - val; }
 
   return 0.f;
 }
 
-Pose FundamentalMatrixEstimator::calcPose(const cv::Mat &H, const cv::Mat &K)
-{
+Pose FundamentalMatrixEstimator::calcPose(const cv::Mat &H, const cv::Mat &K) {
   // cv::decomposeHomographyMat(H);
   return Pose();
 }
