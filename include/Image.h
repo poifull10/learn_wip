@@ -4,11 +4,9 @@
 
 #include <filesystem>
 
-namespace wip
-{
+namespace wip {
 
-class Image
-{
+class Image {
 public:
   Image(cv::Mat&& img) : data_(std::move(img)){};
   Image() : data_(){};

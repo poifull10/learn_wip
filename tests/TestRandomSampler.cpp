@@ -2,8 +2,7 @@
 
 #include "RandomSampler.h"
 
-TEST(RandomSampler, test_sample)
-{
+TEST(RandomSampler, test_sample) {
   wip::RandomSampler sampler(10);
   const auto samples = sampler.sample(3);
 
@@ -15,8 +14,5 @@ TEST(RandomSampler, test_sample)
   std::vector<size_t> expected(10);
   std::iota(expected.begin(), expected.end(), 0);
 
-  for (size_t i = 0; i < 10; i++)
-  {
-    EXPECT_EQ(expected[i], actual[i]);
-  }
+  for (size_t i = 0; i < 10; i++) { EXPECT_EQ(expected[i], actual[i]); }
 }

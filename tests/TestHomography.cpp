@@ -5,10 +5,8 @@
 
 #include "Homography.h"
 
-namespace wip
-{
-TEST(HomographyEstimator, test_calculate)
-{
+namespace wip {
+TEST(HomographyEstimator, test_calculate) {
   wip::HomographyEstimator he;
   std::vector<cv::Point2f> src;
   src.emplace_back(1, 2);
@@ -34,8 +32,7 @@ TEST(HomographyEstimator, test_calculate)
   EXPECT_NEAR(H.at<double>(cv::Point(2, 2)), 1, 1e-3);
 }
 
-TEST(HomographyEstimator, test_evaluate)
-{
+TEST(HomographyEstimator, test_evaluate) {
   wip::HomographyEstimator he;
   std::vector<cv::Point2f> src;
   src.emplace_back(1, 2);
@@ -48,14 +45,13 @@ TEST(HomographyEstimator, test_evaluate)
   dst.emplace_back(-189.32242839, -54.92238531);
   dst.emplace_back(1.89840739, 1.11539421);
 
-  const auto H = he.calculate(src, dst);
+  const auto H          = he.calculate(src, dst);
   const auto [score, _] = he.evaluate(H, src, dst);
 
   EXPECT_NEAR(score, 5.99f * 8, 1e-3);
 }
 
-TEST(HomographyEstimator, test_getPose)
-{
+TEST(HomographyEstimator, test_getPose) {
   wip::HomographyEstimator he;
   std::vector<cv::Point2f> src;
   src.emplace_back(1, 2);

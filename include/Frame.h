@@ -10,26 +10,18 @@ namespace wip
 
 {
 
-class Frame
-{
+class Frame {
 public:
   Frame(const std::filesystem::path& path,
         const PinholeCameraParameter& cameraParameter)
-    : image_(std::move(cv::imread(path.string())))
-    , pose_()
-    , cameraParameter_(cameraParameter)
-  {
-  }
+    : image_(std::move(cv::imread(path.string()))), pose_(),
+      cameraParameter_(cameraParameter) {}
 
   Frame(const Image& img, const PinholeCameraParameter& cameraParameter)
-    : image_(img), pose_(), cameraParameter_(cameraParameter)
-  {
-  }
+    : image_(img), pose_(), cameraParameter_(cameraParameter) {}
 
   Frame(Image&& img, const PinholeCameraParameter& cameraParameter)
-    : image_(std::move(img)), pose_(), cameraParameter_(cameraParameter)
-  {
-  }
+    : image_(std::move(img)), pose_(), cameraParameter_(cameraParameter) {}
 
   Image image() const { return image_; }
 

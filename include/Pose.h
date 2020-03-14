@@ -7,22 +7,18 @@
 #include <opencv2/opencv.hpp>
 #include <tuple>
 
-namespace wip
-{
-class Pose
-{
+namespace wip {
+class Pose {
 public:
   Pose() : quat_{0, 0, 0, 1}, trans_{0, 0, 0} {}
   Pose(const Pose& p) : quat_{p.quat_}, trans_{p.trans_} {}
-  Pose(const cv::Mat& R, const cv::Mat& t)
-  {
+  Pose(const cv::Mat& R, const cv::Mat& t) {
     const auto [q, t_] = toArray(R, t);
-    quat_ = q;
-    trans_ = t_;
+    quat_              = q;
+    trans_             = t_;
   }
 
-  friend std::ostream& operator<<(std::ostream& os, const Pose& pose)
-  {
+  friend std::ostream& operator<<(std::ostream& os, const Pose& pose) {
     os << "quat : rx = " << pose.rx() << ", ry = " << pose.ry()
        << ", rz = " << pose.rz() << ", rw = " << pose.rw() << std::endl;
     os << "trans : x = " << pose.x() << ", y = " << pose.y()
@@ -30,16 +26,11 @@ public:
     return os;
   }
 
-  std::tuple<std::array<float, 4>, std::array<float, 3>> toArray(
-    const cv::Mat& R, const cv::Mat& t)
-  {
+  std::tuple<std::array<float, 4>, std::array<float, 3>>
+  toArray(const cv::Mat& R, const cv::Mat& t) {
     Eigen::Matrix3f m;
-    for (size_t iw = 0; iw < 3; iw++)
-    {
-      for (size_t ih = 0; ih < 3; ih++)
-      {
-        m(ih, iw) = R.at<float>(ih, iw);
-      }
+    for (size_t iw = 0; iw < 3; iw++) {
+      for (size_t ih = 0; ih < 3; ih++) { m(ih, iw) = R.at<float>(ih, iw); }
     }
 
     const Eigen::Quaternionf quat(m);

@@ -10,11 +10,9 @@
 #include <memory>
 #include <vector>
 
-namespace wip
-{
+namespace wip {
 
-class Dataset
-{
+class Dataset {
 public:
   using iterator = typename std::vector<std::shared_ptr<Frame>>::iterator;
   using const_iterator =

@@ -6,23 +6,19 @@
 
 #include "RandomSampler.h"
 
-namespace wip
-{
+namespace wip {
 std::pair<float, cv::Mat> PoseEstimator::estimate(
-  const std::vector<std::tuple<cv::KeyPoint, cv::KeyPoint>> &matchedKeyPoints)
-{
+  const std::vector<std::tuple<cv::KeyPoint, cv::KeyPoint>> &matchedKeyPoints) {
   float score = -std::numeric_limits<float>::max();
   cv::Mat H;
 
-  for (size_t i = 0; i < ransacN_; i++)
-  {
+  for (size_t i = 0; i < ransacN_; i++) {
     RandomSampler rs(matchedKeyPoints.size());
     const auto eightIndices = rs.sample(8);
 
     assert(eightIndices.size() == 8);
     std::vector<cv::Point2f> srcMatchedPoints, dstMatchedPoints;
-    for (const auto &id : eightIndices)
-    {
+    for (const auto &id : eightIndices) {
       const auto [srckpt, dstkpt] = matchedKeyPoints[id];
       srcMatchedPoints.push_back(srckpt.pt);
       dstMatchedPoints.push_back(dstkpt.pt);
@@ -31,21 +27,19 @@ std::pair<float, cv::Mat> PoseEstimator::estimate(
     const auto H_ = calculate(srcMatchedPoints, dstMatchedPoints);
 
     std::vector<cv::Point2f> evalSrcMatchedPoints, evalDstMatchedPoints;
-    for (const auto &[srckpt, dstkpt] : matchedKeyPoints)
-    {
+    for (const auto &[srckpt, dstkpt] : matchedKeyPoints) {
       evalSrcMatchedPoints.push_back(srckpt.pt);
       evalDstMatchedPoints.push_back(dstkpt.pt);
     }
 
     const auto [score_, inliners] =
       evaluate(H_, evalSrcMatchedPoints, evalDstMatchedPoints);
-    if (score < score_)
-    {
+    if (score < score_) {
       std::cout << "inliners " << inliners.size() << std::endl;
       std::cout << "score " << score_ << std::endl;
       std::cout << H_ << std::endl;
-      score = score_;
-      H = H_;
+      score     = score_;
+      H         = H_;
       inliners_ = inliners;
     }
   }
@@ -53,18 +47,16 @@ std::pair<float, cv::Mat> PoseEstimator::estimate(
 }
 
 cv::Mat compositeProjectionMatrix(const cv::Mat &K, const cv::Mat &R,
-                                  const cv::Mat &t)
-{
+                                  const cv::Mat &t) {
   cv::Mat outerMat = cv::Mat::zeros(3, 4, CV_32F);
   R.copyTo(outerMat(cv::Rect(0, 0, 3, 3)));
   t.copyTo(outerMat(cv::Rect(3, 0, 1, 3)));
   return K * outerMat;
 }
 
-bool checkRules(const cv::Mat &p3d, const cv::Mat &R, const cv::Mat &t)
-{
+bool checkRules(const cv::Mat &p3d, const cv::Mat &R, const cv::Mat &t) {
   cv::Mat reconstructedPoint1 = p3d;
-  cv::Mat R_ = R;
+  cv::Mat R_                  = R;
   R_.convertTo(R_, CV_32F);
   cv::Mat t_ = t;
   t_.convertTo(t_, CV_32F);
@@ -79,40 +71,35 @@ bool checkRules(const cv::Mat &p3d, const cv::Mat &R, const cv::Mat &t)
   auto parallax =
     normal1.dot(normal2) / (cv::norm(normal1) * cv::norm(normal2));
 
-  if (parallax < 0.99 && reconstructedPoint1.at<float>(2, 0) < 0)
-  {
+  if (parallax < 0.99 && reconstructedPoint1.at<float>(2, 0) < 0) {
     return false;
   }
 
   cv::Mat reconstructedPoint2 = R_ * reconstructedPoint1 + t_;
   reconstructedPoint2.convertTo(reconstructedPoint2, CV_32F);
 
-  if (parallax < 0.99 && reconstructedPoint2.at<float>(2, 0) < 0)
-  {
+  if (parallax < 0.99 && reconstructedPoint2.at<float>(2, 0) < 0) {
     return false;
   }
   return true;
 }
 
-std::pair<cv::Mat, cv::Mat> PoseEstimator::validatePose(
-  const std::vector<cv::Mat> &rotations,
-  const std::vector<cv::Mat> &translations, const cv::Mat &K)
-{
-
+std::pair<cv::Mat, cv::Mat>
+PoseEstimator::validatePose(const std::vector<cv::Mat> &rotations,
+                            const std::vector<cv::Mat> &translations,
+                            const cv::Mat &K) {
   float bestError = std::numeric_limits<float>::max();
   cv::Mat R, t;
-  for (size_t i = 0; i < rotations.size(); i++)
-  {
-    R = rotations[i];
-    t = translations[i];
+  for (size_t i = 0; i < rotations.size(); i++) {
+    R          = rotations[i];
+    t          = translations[i];
     cv::Mat P1 = compositeProjectionMatrix(K, cv::Mat::eye(3, 3, CV_32F),
                                            cv::Mat::zeros(3, 1, CV_32F));
     cv::Mat P2 = compositeProjectionMatrix(K, rotations[i], translations[i]);
     P1.convertTo(P1, CV_32F);
     P2.convertTo(P2, CV_32F);
 
-    for (size_t j = 0; j < inliners_.size(); j++)
-    {
+    for (size_t j = 0; j < inliners_.size(); j++) {
       const auto [src, dst] = inliners_[j];
       cv::Mat A(4, 4, CV_32F);
 
@@ -123,14 +110,13 @@ std::pair<cv::Mat, cv::Mat> PoseEstimator::validatePose(
 
       cv::Mat u, w, vt;
       cv::SVD::compute(A, w, u, vt, cv::SVD::MODIFY_A | cv::SVD::FULL_UV);
-      cv::Mat x3D = vt.row(3).t();
+      cv::Mat x3D     = vt.row(3).t();
       cv::Mat x3DHomo = x3D / x3D.at<float>(3);
-      x3D = x3D.rowRange(0, 3) / x3D.at<float>(3);
+      x3D             = x3D.rowRange(0, 3) / x3D.at<float>(3);
 
       const cv::Mat reconstructedPoint = x3D;
 
-      if (!checkRules(reconstructedPoint, rotations[i], translations[i]))
-      {
+      if (!checkRules(reconstructedPoint, rotations[i], translations[i])) {
         break;
       }
 
@@ -147,11 +133,10 @@ std::pair<cv::Mat, cv::Mat> PoseEstimator::validatePose(
       const auto reprojectedError =
         (x1 - src.x) * (y1 - src.y) + (x2 - dst.x) * (y2 - dst.y);
 
-      if (reprojectedError < bestError)
-      {
+      if (reprojectedError < bestError) {
         bestError = reprojectedError;
-        R = rotations[i];
-        t = translations[i];
+        R         = rotations[i];
+        t         = translations[i];
       }
     }
   }

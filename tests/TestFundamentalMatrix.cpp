@@ -2,8 +2,7 @@
 
 #include "FundamentalMatrix.h"
 
-TEST(FundamentalMatrix, test_calculate)
-{
+TEST(FundamentalMatrix, test_calculate) {
   wip::FundamentalMatrixEstimator fme;
   std::vector<cv::Point2f> src;
   src.emplace_back(0.54080616, 0.78067211);
@@ -37,8 +36,7 @@ TEST(FundamentalMatrix, test_calculate)
   EXPECT_NEAR(F.at<double>(cv::Point(2, 2)), 1, 1e-3);
 }
 
-TEST(FundamentalMatrix, test_evaluate)
-{
+TEST(FundamentalMatrix, test_evaluate) {
   wip::FundamentalMatrixEstimator fme;
   std::vector<cv::Point2f> src;
   src.emplace_back(54.080616, 78.067211);
