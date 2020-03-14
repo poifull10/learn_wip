@@ -1,0 +1,17 @@
+name: run_release
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: run
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Run
+        uses: ./.github/actions/cpp
+        with:
+          run-command: ".ci/run.sh"
+        env:
+          FILEID: ${{ secrets.DATASET_FILEID }}

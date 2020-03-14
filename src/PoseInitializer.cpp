@@ -33,9 +33,10 @@ std::optional<Pose> PoseInitializer::operator()(Frame &src, Frame &dst) const {
   std::cout << "hScore " << hScore << std::endl;
   std::cout << "fScore " << fScore << std::endl;
 
-  const auto pose = he.calcPose(H, src.cameraParameter_.K());
-
-  return pose;
+  if (hScore / (hScore + fScore) > 0.4) {
+    return he.calcPose(H, src.cameraParameter_.K());
+  }
+  return fme.calcPose(F, src.cameraParameter_.K());
 }
 
 } // namespace wip

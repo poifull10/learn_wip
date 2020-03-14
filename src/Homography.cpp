@@ -47,8 +47,7 @@ float HomographyEstimator::evalFunc(const float val) const {
 
 Pose HomographyEstimator::calcPose(const cv::Mat &H, const cv::Mat &K) {
   std::vector<cv::Mat> rotations, translations, normals;
-  const auto solutions =
-    cv::decomposeHomographyMat(H, K, rotations, translations, normals);
+  cv::decomposeHomographyMat(H, K, rotations, translations, normals);
   const auto [R, t] = validatePose(rotations, translations, K);
   return Pose(R, t);
 }
