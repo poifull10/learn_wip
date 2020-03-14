@@ -34,8 +34,10 @@ std::optional<Pose> PoseInitializer::operator()(Frame &src, Frame &dst) const {
   std::cout << "fScore " << fScore << std::endl;
 
   if (hScore / (hScore + fScore) > 0.4) {
+    std::cout << "Inlier : " << he.inliers().size() << std::endl;
     return he.calcPose(H, src.cameraParameter_.K());
   }
+  std::cout << "Inlier : " << fme.inliers().size() << std::endl;
   return fme.calcPose(F, src.cameraParameter_.K());
 }
 
