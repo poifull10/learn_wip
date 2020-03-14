@@ -30,7 +30,7 @@ int main(int argc, char** argv) {
 
   if (vm.count("dir")) {
     const auto dataDir = vm["dir"].as<std::string>();
-    wip::Dataset dataset(dataDir, 55);
+    wip::Dataset dataset(dataDir, 30);
     std::cout << dataset.size() << std::endl;
 
     wip::FeatureExtractor fe;
@@ -50,9 +50,9 @@ int main(int argc, char** argv) {
     }
 
     // estimate camera poses
-    for (size_t i = 0; i < 1; i++) {
+    for (size_t i = 0; i < dataset.size() - 1; i++) {
       wip::PoseInitializer pi;
-      const auto pose = pi(*dataset[i], *dataset[i + 50]);
+      const auto pose = pi(*dataset[i], *dataset[i + 1]);
       if (pose) { std::cout << *pose << std::endl; }
     }
   }

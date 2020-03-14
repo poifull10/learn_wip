@@ -30,7 +30,7 @@ public:
   toArray(const cv::Mat& R, const cv::Mat& t) {
     Eigen::Matrix3f m;
     for (size_t iw = 0; iw < 3; iw++) {
-      for (size_t ih = 0; ih < 3; ih++) { m(ih, iw) = R.at<float>(ih, iw); }
+      for (size_t ih = 0; ih < 3; ih++) { m(ih, iw) = R.at<double>(ih, iw); }
     }
 
     const Eigen::Quaternionf quat(m);
