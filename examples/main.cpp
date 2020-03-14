@@ -53,7 +53,7 @@ int main(int argc, char** argv) {
     for (size_t i = 0; i < 1; i++) {
       wip::PoseInitializer pi;
       const auto pose = pi(*dataset[i], *dataset[i + 50]);
-      std::cout << pose << std::endl;
+      if (pose) { std::cout << *pose << std::endl; }
     }
   }
   return 0;
