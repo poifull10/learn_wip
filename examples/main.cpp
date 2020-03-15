@@ -10,9 +10,10 @@
 int main(int argc, char** argv) {
   namespace bopt = boost::program_options;
   bopt::options_description opt("Options");
-  opt.add_options()("help,h", "show help")(
-    "dir,D", bopt::value<std::string>(), "data dir")("debug,d",
-                                                     "debug mode, dump files");
+  opt.add_options()("help,h", "show help")("dir,D", bopt::value<std::string>(),
+                                           "data dir")(
+    "num,n", bopt::value<size_t>()->default_value(0),
+    "num of loading")("debug,d", "debug mode, dump files");
 
   bopt::variables_map vm;
 
@@ -30,7 +31,7 @@ int main(int argc, char** argv) {
 
   if (vm.count("dir")) {
     const auto dataDir = vm["dir"].as<std::string>();
-    wip::Dataset dataset(dataDir, 30);
+    wip::Dataset dataset(dataDir, vm["num"].as<size_t>());
     std::cout << dataset.size() << std::endl;
 
     wip::FeatureExtractor fe;
