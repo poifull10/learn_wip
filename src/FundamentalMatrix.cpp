@@ -63,8 +63,11 @@ float FundamentalMatrixEstimator::evalFunc(const float val) const {
   return 0.f;
 }
 
-Pose FundamentalMatrixEstimator::calcPose(const cv::Mat &H, const cv::Mat &K) {
-  // cv::decomposeHomographyMat(H);
-  return Pose();
+Pose FundamentalMatrixEstimator::calcPose(const cv::Mat &F, const cv::Mat &K) {
+  cv::Mat R1, R2, T;
+  const cv::Mat E = K.inv().t() * F * K.inv();
+  cv::decomposeEssentialMat(E, R1, R2, T);
+  const auto [R, t] = validatePose({R1, R2}, {T, T}, K);
+  return Pose(R, t);
 }
 } // namespace wip

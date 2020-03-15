@@ -29,6 +29,10 @@ public:
   validatePose(const std::vector<cv::Mat> &rotations,
                const std::vector<cv::Mat> &translations, const cv::Mat &K);
 
+  std::vector<std::pair<cv::Point2f, cv::Point2f>> inliers() const {
+    return inliners_;
+  }
+
 protected:
   size_t ransacN_;
   std::vector<std::pair<cv::Point2f, cv::Point2f>> inliners_;

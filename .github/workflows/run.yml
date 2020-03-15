@@ -1,17 +1,17 @@
-name: test
+name: run_release
 
 on: [push]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    name: test
+    name: run
     steps:
       - name: Checkout
         uses: actions/checkout@v1
-      - name: Test
+      - name: Run
         uses: ./.github/actions/cpp
         with:
-          run-command: ".ci/test.sh"
+          run-command: ".ci/run.sh"
         env:
           FILEID: ${{ secrets.DATASET_Y_FILEID }}

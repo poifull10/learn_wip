@@ -9,8 +9,8 @@
 namespace wip {
 std::pair<float, cv::Mat> PoseEstimator::estimate(
   const std::vector<std::tuple<cv::KeyPoint, cv::KeyPoint>> &matchedKeyPoints) {
-  float score = -std::numeric_limits<float>::max();
-  cv::Mat H;
+  float score_ = -std::numeric_limits<float>::max();
+  cv::Mat H_;
 
   for (size_t i = 0; i < ransacN_; i++) {
     RandomSampler rs(matchedKeyPoints.size());
@@ -24,7 +24,7 @@ std::pair<float, cv::Mat> PoseEstimator::estimate(
       dstMatchedPoints.push_back(dstkpt.pt);
     }
 
-    const auto H_ = calculate(srcMatchedPoints, dstMatchedPoints);
+    const auto H = calculate(srcMatchedPoints, dstMatchedPoints);
 
     std::vector<cv::Point2f> evalSrcMatchedPoints, evalDstMatchedPoints;
     for (const auto &[srckpt, dstkpt] : matchedKeyPoints) {
@@ -32,18 +32,15 @@ std::pair<float, cv::Mat> PoseEstimator::estimate(
       evalDstMatchedPoints.push_back(dstkpt.pt);
     }
 
-    const auto [score_, inliners] =
-      evaluate(H_, evalSrcMatchedPoints, evalDstMatchedPoints);
-    if (score < score_) {
-      std::cout << "inliners " << inliners.size() << std::endl;
-      std::cout << "score " << score_ << std::endl;
-      std::cout << H_ << std::endl;
-      score     = score_;
-      H         = H_;
+    const auto [score, inliners] =
+      evaluate(H, evalSrcMatchedPoints, evalDstMatchedPoints);
+    if (score_ < score) {
+      score_    = score;
+      H_        = H;
       inliners_ = inliners;
     }
   }
-  return {score, H};
+  return {score_, H_};
 }
 
 cv::Mat compositeProjectionMatrix(const cv::Mat &K, const cv::Mat &R,
