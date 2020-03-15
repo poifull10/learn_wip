@@ -5,30 +5,30 @@
 namespace wip {
 
 cv::Mat FundamentalMatrixEstimator::calculate(
-  const std::vector<cv::Point2f> &srcPoints,
-  const std::vector<cv::Point2f> &dstPoints) const {
+  const std::vector<cv::Point2d> &srcPoints,
+  const std::vector<cv::Point2d> &dstPoints) const {
   return cv::findFundamentalMat(srcPoints, dstPoints, cv::FM_8POINT);
 }
 
-std::tuple<float, std::vector<std::pair<cv::Point2f, cv::Point2f>>>
+std::tuple<double, std::vector<std::pair<cv::Point2d, cv::Point2d>>>
 FundamentalMatrixEstimator::evaluate(
-  const cv::Mat &F, std::vector<cv::Point2f> &srcPoints,
-  const std::vector<cv::Point2f> &dstPoints) {
+  const cv::Mat &F, std::vector<cv::Point2d> &srcPoints,
+  const std::vector<cv::Point2d> &dstPoints) {
   assert(srcPoints.size() == dstPoints.size());
-  std::vector<std::pair<cv::Point2f, cv::Point2f>> inliners;
+  std::vector<std::pair<cv::Point2d, cv::Point2d>> inliners;
 
-  float score = 0;
+  double score = 0;
   if (F.size().width == 0) { return {score, {}}; }
   for (size_t i = 0; i < srcPoints.size(); i++) {
-    float f0 = F.at<double>(cv::Point(0, 0));
-    float f1 = F.at<double>(cv::Point(1, 0));
-    float f2 = F.at<double>(cv::Point(2, 0));
-    float f3 = F.at<double>(cv::Point(0, 1));
-    float f4 = F.at<double>(cv::Point(1, 1));
-    float f5 = F.at<double>(cv::Point(2, 1));
-    float f6 = F.at<double>(cv::Point(0, 2));
-    float f7 = F.at<double>(cv::Point(1, 2));
-    float f8 = F.at<double>(cv::Point(2, 2));
+    double f0 = F.at<double>(cv::Point(0, 0));
+    double f1 = F.at<double>(cv::Point(1, 0));
+    double f2 = F.at<double>(cv::Point(2, 0));
+    double f3 = F.at<double>(cv::Point(0, 1));
+    double f4 = F.at<double>(cv::Point(1, 1));
+    double f5 = F.at<double>(cv::Point(2, 1));
+    double f6 = F.at<double>(cv::Point(0, 2));
+    double f7 = F.at<double>(cv::Point(1, 2));
+    double f8 = F.at<double>(cv::Point(2, 2));
 
     const auto aSrc = f0 * dstPoints[i].x + f3 * dstPoints[i].y + f6;
     const auto bSrc = f1 * dstPoints[i].x + f4 * dstPoints[i].y + f7;
@@ -55,7 +55,7 @@ FundamentalMatrixEstimator::evaluate(
   return {score, inliners};
 }
 
-float FundamentalMatrixEstimator::evalFunc(const float val) const {
+double FundamentalMatrixEstimator::evalFunc(const double val) const {
   const auto thresh = 3.84;
   const auto gamma  = 5.99;
   if (val < thresh) { return gamma - val; }

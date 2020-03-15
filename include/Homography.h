@@ -7,16 +7,16 @@ class HomographyEstimator : public PoseEstimator {
 public:
   HomographyEstimator(size_t ransacN = 30) : PoseEstimator(ransacN) {}
 
-  cv::Mat calculate(const std::vector<cv::Point2f> &srcPoints,
-                    const std::vector<cv::Point2f> &dstPoints) const override;
+  cv::Mat calculate(const std::vector<cv::Point2d> &srcPoints,
+                    const std::vector<cv::Point2d> &dstPoints) const override;
 
-  std::tuple<float, std::vector<std::pair<cv::Point2f, cv::Point2f>>>
-  evaluate(const cv::Mat &H, std::vector<cv::Point2f> &srcPoints,
-           const std::vector<cv::Point2f> &dstPoints) override;
+  std::tuple<double, std::vector<std::pair<cv::Point2d, cv::Point2d>>>
+  evaluate(const cv::Mat &H, std::vector<cv::Point2d> &srcPoints,
+           const std::vector<cv::Point2d> &dstPoints) override;
 
   Pose calcPose(const cv::Mat &H, const cv::Mat &K) override;
 
 private:
-  float evalFunc(const float val) const;
+  double evalFunc(const double val) const;
 };
 } // namespace wip

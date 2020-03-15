@@ -26,7 +26,7 @@ public:
     return os;
   }
 
-  std::tuple<std::array<float, 4>, std::array<float, 3>>
+  std::tuple<std::array<double, 4>, std::array<double, 3>>
   toArray(const cv::Mat& R, const cv::Mat& t) {
     Eigen::Matrix3f m;
     for (size_t iw = 0; iw < 3; iw++) {
@@ -35,22 +35,22 @@ public:
 
     const Eigen::Quaternionf quat(m);
     return {{quat.x(), quat.y(), quat.z(), quat.w()},
-            {t.at<float>(0, 0), t.at<float>(1, 0), t.at<float>(2, 0)}};
+            {t.at<double>(0, 0), t.at<double>(1, 0), t.at<double>(2, 0)}};
   }
 
-  std::array<float, 4> quat() const { return quat_; }
-  std::array<float, 3> trans() const { return trans_; }
+  std::array<double, 4> quat() const { return quat_; }
+  std::array<double, 3> trans() const { return trans_; }
 
-  float rx() const { return quat_[0]; }
-  float ry() const { return quat_[1]; }
-  float rz() const { return quat_[2]; }
-  float rw() const { return quat_[3]; }
-  float x() const { return trans_[0]; }
-  float y() const { return trans_[1]; }
-  float z() const { return trans_[2]; }
+  double rx() const { return quat_[0]; }
+  double ry() const { return quat_[1]; }
+  double rz() const { return quat_[2]; }
+  double rw() const { return quat_[3]; }
+  double x() const { return trans_[0]; }
+  double y() const { return trans_[1]; }
+  double z() const { return trans_[2]; }
 
 private:
-  std::array<float, 4> quat_;
-  std::array<float, 3> trans_;
+  std::array<double, 4> quat_;
+  std::array<double, 3> trans_;
 };
 } // namespace wip

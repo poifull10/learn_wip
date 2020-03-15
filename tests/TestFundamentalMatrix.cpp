@@ -4,7 +4,7 @@
 
 TEST(FundamentalMatrix, test_calculate) {
   wip::FundamentalMatrixEstimator fme;
-  std::vector<cv::Point2f> src;
+  std::vector<cv::Point2d> src;
   src.emplace_back(0.54080616, 0.78067211);
   src.emplace_back(0.05286922, 0.07238643);
   src.emplace_back(0.28100833, 0.87153334);
@@ -13,7 +13,7 @@ TEST(FundamentalMatrix, test_calculate) {
   src.emplace_back(0.11672991, 0.48398556);
   src.emplace_back(0.45910073, 0.75345235);
   src.emplace_back(0.70279012, 0.59405252);
-  std::vector<cv::Point2f> dst;
+  std::vector<cv::Point2d> dst;
   dst.emplace_back(0.99879817, 0.19333665);
   dst.emplace_back(0.0462407, 0.65652249);
   dst.emplace_back(0.31125151, 0.89136524);
@@ -38,7 +38,7 @@ TEST(FundamentalMatrix, test_calculate) {
 
 TEST(FundamentalMatrix, test_evaluate) {
   wip::FundamentalMatrixEstimator fme;
-  std::vector<cv::Point2f> src;
+  std::vector<cv::Point2d> src;
   src.emplace_back(54.080616, 78.067211);
   src.emplace_back(5.286922, 7.238643);
   src.emplace_back(28.100833, 87.153334);
@@ -47,7 +47,7 @@ TEST(FundamentalMatrix, test_evaluate) {
   src.emplace_back(11.672991, 48.398556);
   src.emplace_back(45.910073, 75.345235);
   src.emplace_back(70.279012, 59.405252);
-  std::vector<cv::Point2f> dst;
+  std::vector<cv::Point2d> dst;
   dst.emplace_back(99.879817, 19.333665);
   dst.emplace_back(4.62407, 65.652249);
   dst.emplace_back(31.125151, 89.136524);

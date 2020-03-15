@@ -12,16 +12,16 @@ class PoseEstimator {
 public:
   PoseEstimator(size_t ransacN = 30) : ransacN_(ransacN), inliners_() {}
 
-  std::pair<float, cv::Mat> estimate(
+  std::pair<double, cv::Mat> estimate(
     const std::vector<std::tuple<cv::KeyPoint, cv::KeyPoint>> &keyPoints);
 
   virtual cv::Mat
-  calculate(const std::vector<cv::Point2f> &srcPoints,
-            const std::vector<cv::Point2f> &dstPoints) const = 0;
+  calculate(const std::vector<cv::Point2d> &srcPoints,
+            const std::vector<cv::Point2d> &dstPoints) const = 0;
 
-  virtual std::tuple<float, std::vector<std::pair<cv::Point2f, cv::Point2f>>>
-  evaluate(const cv::Mat &HorF, std::vector<cv::Point2f> &srcPoints,
-           const std::vector<cv::Point2f> &dstPoints) = 0;
+  virtual std::tuple<double, std::vector<std::pair<cv::Point2d, cv::Point2d>>>
+  evaluate(const cv::Mat &HorF, std::vector<cv::Point2d> &srcPoints,
+           const std::vector<cv::Point2d> &dstPoints) = 0;
 
   virtual Pose calcPose(const cv::Mat &HorF, const cv::Mat &K) = 0;
 
@@ -29,13 +29,13 @@ public:
   validatePose(const std::vector<cv::Mat> &rotations,
                const std::vector<cv::Mat> &translations, const cv::Mat &K);
 
-  std::vector<std::pair<cv::Point2f, cv::Point2f>> inliers() const {
+  std::vector<std::pair<cv::Point2d, cv::Point2d>> inliers() const {
     return inliners_;
   }
 
 protected:
   size_t ransacN_;
-  std::vector<std::pair<cv::Point2f, cv::Point2f>> inliners_;
+  std::vector<std::pair<cv::Point2d, cv::Point2d>> inliners_;
 };
 
 cv::Mat compositeProjectionMatrix(const cv::Mat &K, const cv::Mat &R,

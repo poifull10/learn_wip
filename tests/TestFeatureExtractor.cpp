@@ -4,6 +4,7 @@
 #include <gtest/gtest.h>
 
 #include <cmath>
+#include <opencv2/opencv.hpp>
 
 TEST(FeatureExtractor, test_extract_orb) {
   const auto src = wip::load_image("../data/0001.png");
@@ -12,13 +13,17 @@ TEST(FeatureExtractor, test_extract_orb) {
   wip::FeatureExtractor fe;
   wip::FeatureMatcher fm;
 
-  const auto matched = fm(fe(src), fe(dst));
+  const auto [srcKpt, srcDsc] = fe(src);
+  const auto [dstKpt, dstDsc] = fe(dst);
 
-  for (const auto& [src_kps, dst_kps] : matched) {
-    const auto kp1  = src_kps;
-    const auto kp2  = dst_kps;
-    const auto diff = kp1.pt - kp2.pt;
-    // std::cout << cv::norm(diff) << std::endl;
-    // EXPECT_NEAR(cv::norm(diff), 0, 20);
-  }
+  auto matched = fm({srcKpt, srcDsc}, {dstKpt, dstDsc});
+
+  const auto dm = cv::DescriptorMatcher::create("BruteForce-Hamming");
+  std::vector<cv::DMatch> matches_;
+  dm->match(srcDsc, dstDsc, matches_);
+
+  cv::Mat outImage;
+  cv::drawMatches(src.data(), srcKpt, dst.data(), dstKpt, matches_, outImage);
+  EXPECT_GT(matched.size(), 0);
+  cv::imwrite("test_matched.png", outImage);
 }
