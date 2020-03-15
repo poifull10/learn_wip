@@ -32,7 +32,8 @@ std::optional<Pose> PoseInitializer::operator()(Frame &src, Frame &dst) const {
   // Select H, F
   std::cout << "hScore " << hScore << std::endl;
   std::cout << "fScore " << fScore << std::endl;
-  std::cout << "Inlier : " << he.inliers().size() << std::endl;
+  std::cout << "H Inlier : " << he.inliers().size() << std::endl;
+  std::cout << "F Inlier : " << fme.inliers().size() << std::endl;
 
   const auto [kp, _] = srcKptDsc;
   std::vector<cv::KeyPoint> dstKp;

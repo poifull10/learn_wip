@@ -11,7 +11,7 @@ public:
                     const std::vector<cv::Point2d> &dstPoints) const override;
 
   std::tuple<double, std::vector<std::pair<cv::Point2d, cv::Point2d>>>
-  evaluate(const cv::Mat &H, std::vector<cv::Point2d> &srcPoints,
+  evaluate(const cv::Mat &H, const std::vector<cv::Point2d> &srcPoints,
            const std::vector<cv::Point2d> &dstPoints) override;
 
   Pose calcPose(const cv::Mat &H, const cv::Mat &K) override;

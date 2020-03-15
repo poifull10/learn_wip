@@ -12,7 +12,7 @@ cv::Mat FundamentalMatrixEstimator::calculate(
 
 std::tuple<double, std::vector<std::pair<cv::Point2d, cv::Point2d>>>
 FundamentalMatrixEstimator::evaluate(
-  const cv::Mat &F, std::vector<cv::Point2d> &srcPoints,
+  const cv::Mat &F, const std::vector<cv::Point2d> &srcPoints,
   const std::vector<cv::Point2d> &dstPoints) {
   assert(srcPoints.size() == dstPoints.size());
   std::vector<std::pair<cv::Point2d, cv::Point2d>> inliners;
