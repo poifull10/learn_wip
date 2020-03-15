@@ -7,7 +7,7 @@
 namespace wip {
 class FeatureExtractor {
 public:
-  FeatureExtractor() : featureNum_(300) {}
+  FeatureExtractor() : featureNum_(320), gridX(16), gridY(4) {}
 
   std::tuple<std::vector<cv::KeyPoint>, cv::Mat>
   operator()(const Image& image) const;
@@ -16,5 +16,6 @@ public:
 
 private:
   size_t featureNum_;
+  size_t gridX, gridY;
 };
 } // namespace wip

@@ -9,9 +9,6 @@ class FundamentalMatrixEstimator : public PoseEstimator {
 public:
   FundamentalMatrixEstimator(size_t ransacN = 30) : PoseEstimator(ransacN) {}
 
-  /**
-   *  @return double matrix
-   */
   cv::Mat calculate(const std::vector<cv::Point2d> &srcPoints,
                     const std::vector<cv::Point2d> &dstPoints) const override;
 
