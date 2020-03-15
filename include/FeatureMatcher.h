@@ -14,6 +14,7 @@ public:
              const std::tuple<std::vector<cv::KeyPoint>, cv::Mat>& dst);
 
   size_t size() const { return matches_.size(); }
+  std::vector<cv::DMatch> matches() const { return matches_; }
 
 private:
   std::vector<cv::DMatch> matches_;

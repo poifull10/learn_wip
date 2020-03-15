@@ -16,6 +16,7 @@ public:
   Image& operator=(const Image& image) = default;
 
   cv::Mat data() const { return data_; }
+  Image trim(size_t x, size_t y, size_t w, size_t h) const;
   size_t width() const { return data_.cols; }
   size_t height() const { return data_.rows; }
 
