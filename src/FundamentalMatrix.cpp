@@ -67,6 +67,8 @@ Pose FundamentalMatrixEstimator::calcPose(const cv::Mat &F, const cv::Mat &K) {
   cv::Mat R1, R2, T;
   const cv::Mat E = K.inv().t() * F * K.inv();
   cv::decomposeEssentialMat(E, R1, R2, T);
+  std::cout << R1 << ", " << T << std::endl;
+  std::cout << R2 << ", " << T << std::endl;
   const auto [R, t] = validatePose({R1, R2}, {T, T}, K);
   return Pose(R, t);
 }
