@@ -14,4 +14,4 @@ jobs:
         with:
           run-command: ".ci/run.sh"
         env:
-          FILEID: ${{ secrets.DATASET_FILEID }}
+          FILEID: ${{ secrets.DATASET_Y_FILEID }}
