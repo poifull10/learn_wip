@@ -9,7 +9,7 @@
 namespace wip {
 class PoseInitializer {
 public:
-  PoseInitializer() : featureExtractor_(), ransac_n_(100) {}
+  PoseInitializer() : featureExtractor_(), ransac_n_(200) {}
   std::optional<Pose> operator()(Frame &src, Frame &dst) const;
 
 private:

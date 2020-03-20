@@ -25,6 +25,8 @@ TEST(FundamentalMatrix, test_calculate) {
 
   const auto F = fme.calculate(src, dst);
 
+  std::cout << F << std::endl;
+
   EXPECT_NEAR(F.at<double>(cv::Point(0, 0)), 1.236310675488192, 1e-3);
   EXPECT_NEAR(F.at<double>(cv::Point(1, 0)), -0.6012650992821675, 1e-3);
   EXPECT_NEAR(F.at<double>(cv::Point(2, 0)), -0.2489597912028044, 1e-3);
@@ -58,8 +60,41 @@ TEST(FundamentalMatrix, test_evaluate) {
   dst.emplace_back(55.505818, 74.641622);
 
   const auto F = fme.calculate(src, dst);
-
   const auto [score, _] = fme.evaluate(F, src, dst);
 
   EXPECT_GT(score, 5.99f * 16 / 2);
+}
+
+TEST(FundamentalMatrix, test_calc_pose) {
+  wip::FundamentalMatrixEstimator fme;
+  std::vector<cv::Point2d> src;
+  src.emplace_back(770, 449);
+  src.emplace_back(773, 824);
+  src.emplace_back(1147, 823);
+  src.emplace_back(1150, 449);
+  src.emplace_back(294, 682);
+  src.emplace_back(444, 1019);
+  src.emplace_back(1594, 603);
+  src.emplace_back(1581, 102);
+  std::vector<cv::Point2d> dst;
+  dst.emplace_back(767, 449);
+  dst.emplace_back(769, 823);
+  dst.emplace_back(1143, 824);
+  dst.emplace_back(1145, 449);
+  dst.emplace_back(293, 682);
+  dst.emplace_back(440, 1019);
+  dst.emplace_back(1593, 605);
+  dst.emplace_back(1580, 103);
+
+  cv::Mat K = cv::Mat::eye(3, 3, CV_64F);
+  K.at<double>(cv::Point(0, 0)) = 2666.666666666667;
+  K.at<double>(cv::Point(1, 1)) = 2250.0;
+  K.at<double>(cv::Point(2, 0)) = 960.0;
+  K.at<double>(cv::Point(2, 1)) = 540.0;
+
+  const auto F = fme.calculate(src, dst);
+  const auto pose = fme.calcPose(F, K);
+  const auto normalized_inv_pose = pose.inverse() / pose.inverse().norm();
+  EXPECT_GT(normalized_inv_pose.x(), 0.9);
+  EXPECT_GT(normalized_inv_pose.rw(), 0.99);
 }

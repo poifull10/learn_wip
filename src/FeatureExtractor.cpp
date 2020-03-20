@@ -4,11 +4,11 @@ namespace wip {
 
 std::tuple<std::vector<cv::KeyPoint>, cv::Mat>
 FeatureExtractor::operator()(const Image& image) const {
-  size_t gridWidth  = image.width() / gridX - 1;
-  size_t gridHeight = image.height() / gridY - 1;
+  size_t gridWidth  = image.width() / gridX;
+  size_t gridHeight = image.height() / gridY;
 
   const auto detector =
-    cv::ORB::create(featureNum_ / (gridX * gridY), 1.2F, 4, 11);
+    cv::ORB::create(featureNum_ / (gridX * gridY), 1.2F, 4, 5);
   cv::Mat description;
   std::vector<cv::KeyPoint> keypoints;
   for (size_t ih = 0; ih < gridY; ih++) {

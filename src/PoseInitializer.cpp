@@ -30,14 +30,27 @@ std::optional<Pose> PoseInitializer::operator()(Frame &src, Frame &dst) const {
   const auto [fScore, F] = fme.estimate(matched);
 
   // Select H, F
-  std::cout << "hScore " << hScore << std::endl;
-  std::cout << "fScore " << fScore << std::endl;
+  std::cout << "H Score " << hScore << std::endl;
+  std::cout << "F Score " << fScore << std::endl;
   std::cout << "H Inlier : " << he.inliers().size() << std::endl;
   std::cout << "F Inlier : " << fme.inliers().size() << std::endl;
 
-  const auto [kp, _] = srcKptDsc;
-  std::vector<cv::KeyPoint> dstKp;
-  std::vector<cv::DMatch> _matches;
+  cv::Mat oImg;
+  const auto usedSrcPoints = fme.usedSrcPoints();
+  const auto usedDstPoints = fme.usedDstPoints();
+  std::vector<cv::KeyPoint> usedSrcKeyPoints, usedDstKeyPoints;
+  std::vector<cv::DMatch> usedMatches;
+  for (size_t k = 0; k < usedSrcPoints.size(); k++) {
+    usedSrcKeyPoints.push_back(
+      cv::KeyPoint(usedSrcPoints[k].x, usedSrcPoints[k].y, 1));
+    usedDstKeyPoints.push_back(
+      cv::KeyPoint(usedDstPoints[k].x, usedDstPoints[k].y, 1));
+    usedMatches.push_back(cv::DMatch(k, k, 0));
+  }
+
+  cv::drawMatches(src.image().data(), usedSrcKeyPoints, dst.image().data(),
+                  usedDstKeyPoints, usedMatches, oImg);
+  cv::imwrite("usedPoints.png", oImg);
 
   return fme.calcPose(H, src.cameraParameter_.K());
 

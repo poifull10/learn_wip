@@ -33,9 +33,13 @@ public:
     return inliners_;
   }
 
+  std::vector<cv::Point2d> usedSrcPoints() const { return usedSrcPoints_; }
+  std::vector<cv::Point2d> usedDstPoints() const { return usedDstPoints_; }
+
 protected:
   size_t ransacN_;
   std::vector<std::pair<cv::Point2d, cv::Point2d>> inliners_;
+  std::vector<cv::Point2d> usedSrcPoints_, usedDstPoints_;
 };
 
 cv::Mat compositeProjectionMatrix(const cv::Mat &K, const cv::Mat &R,
