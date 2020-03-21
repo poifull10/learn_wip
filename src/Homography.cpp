@@ -10,7 +10,7 @@ cv::Mat HomographyEstimator::calculate(
 
 std::tuple<double, std::vector<std::pair<cv::Point2d, cv::Point2d>>>
 HomographyEstimator::evaluate(const cv::Mat &H,
-                              std::vector<cv::Point2d> &srcPoints,
+                              const std::vector<cv::Point2d> &srcPoints,
                               const std::vector<cv::Point2d> &dstPoints) {
   const auto srcPoints_ = H.inv() * convertToPoint2D(dstPoints);
   const auto dstPoints_ = H * convertToPoint2D(srcPoints);
@@ -48,6 +48,11 @@ double HomographyEstimator::evalFunc(const double val) const {
 Pose HomographyEstimator::calcPose(const cv::Mat &H, const cv::Mat &K) {
   std::vector<cv::Mat> rotations, translations, normals;
   cv::decomposeHomographyMat(H, K, rotations, translations, normals);
+  for (size_t i = 0; i < rotations.size(); i++) {
+    std::cout << "Estimate Pose == " << std::endl;
+    std::cout << rotations[i] << std::endl;
+    std::cout << translations[i] / cv::norm(translations[i]) << std::endl;
+  }
   const auto [R, t] = validatePose(rotations, translations, K);
   const auto t_norm = cv::norm(t);
   return Pose(R, t / t_norm);

@@ -7,18 +7,20 @@ namespace wip {
 cv::Mat FundamentalMatrixEstimator::calculate(
   const std::vector<cv::Point2d> &srcPoints,
   const std::vector<cv::Point2d> &dstPoints) const {
-  return cv::findFundamentalMat(srcPoints, dstPoints, cv::FM_8POINT);
+  return cv::findFundamentalMat(srcPoints, dstPoints, cv::FM_LMEDS);
 }
 
 std::tuple<double, std::vector<std::pair<cv::Point2d, cv::Point2d>>>
 FundamentalMatrixEstimator::evaluate(
-  const cv::Mat &F, std::vector<cv::Point2d> &srcPoints,
+  const cv::Mat &F, const std::vector<cv::Point2d> &srcPoints,
   const std::vector<cv::Point2d> &dstPoints) {
   assert(srcPoints.size() == dstPoints.size());
   std::vector<std::pair<cv::Point2d, cv::Point2d>> inliners;
 
   double score = 0;
-  if (F.size().width == 0) { return {score, {}}; }
+  if (F.size().width == 0) {
+    return {score, {}};
+  }
   for (size_t i = 0; i < srcPoints.size(); i++) {
     double f0 = F.at<double>(cv::Point(0, 0));
     double f1 = F.at<double>(cv::Point(1, 0));
@@ -57,17 +59,21 @@ FundamentalMatrixEstimator::evaluate(
 
 double FundamentalMatrixEstimator::evalFunc(const double val) const {
   const auto thresh = 3.84;
-  const auto gamma  = 5.99;
-  if (val < thresh) { return gamma - val; }
+  const auto gamma = 5.99;
+  if (val < thresh) {
+    return gamma - val;
+  }
 
   return 0.f;
 }
 
 Pose FundamentalMatrixEstimator::calcPose(const cv::Mat &F, const cv::Mat &K) {
   cv::Mat R1, R2, T;
-  const cv::Mat E = K.inv().t() * F * K.inv();
+  const cv::Mat E = K.t() * F * K;
   cv::decomposeEssentialMat(E, R1, R2, T);
-  const auto [R, t] = validatePose({R1, R2}, {T, T}, K);
+  std::cout << R1.t() << ", " << T << std::endl;
+  std::cout << R2.t() << ", " << T << std::endl;
+  const auto [R, t] = validatePose({R1, R2, R1, R2}, {T, T, -T, -T}, K);
   return Pose(R, t);
 }
 } // namespace wip

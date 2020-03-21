@@ -35,9 +35,11 @@ std::pair<double, cv::Mat> PoseEstimator::estimate(
     const auto [score, inliners] =
       evaluate(H, evalSrcMatchedPoints, evalDstMatchedPoints);
     if (score_ < score) {
-      score_    = score;
-      H_        = H;
+      score_ = score;
+      H_ = H;
       inliners_ = inliners;
+      usedSrcPoints_ = srcMatchedPoints;
+      usedDstPoints_ = dstMatchedPoints;
     }
   }
   return {score_, H_};
@@ -53,7 +55,7 @@ cv::Mat compositeProjectionMatrix(const cv::Mat &K, const cv::Mat &R,
 
 bool checkRules(const cv::Mat &p3d, const cv::Mat &R, const cv::Mat &t) {
   cv::Mat reconstructedPoint1 = p3d;
-  cv::Mat R_                  = R;
+  cv::Mat R_ = R;
   R_.convertTo(R_, CV_64F);
   cv::Mat t_ = t;
   t_.convertTo(t_, CV_64F);
@@ -88,8 +90,8 @@ PoseEstimator::validatePose(const std::vector<cv::Mat> &rotations,
   double bestError = std::numeric_limits<double>::max();
   cv::Mat R, t;
   for (size_t i = 0; i < rotations.size(); i++) {
-    R          = rotations[i];
-    t          = translations[i];
+    R = rotations[i];
+    t = translations[i];
     cv::Mat P1 = compositeProjectionMatrix(K, cv::Mat::eye(3, 3, CV_64F),
                                            cv::Mat::zeros(3, 1, CV_64F));
     cv::Mat P2 = compositeProjectionMatrix(K, rotations[i], translations[i]);
@@ -107,9 +109,9 @@ PoseEstimator::validatePose(const std::vector<cv::Mat> &rotations,
 
       cv::Mat u, w, vt;
       cv::SVD::compute(A, w, u, vt, cv::SVD::MODIFY_A | cv::SVD::FULL_UV);
-      cv::Mat x3D     = vt.row(3).t();
+      cv::Mat x3D = vt.row(3).t();
       cv::Mat x3DHomo = x3D / x3D.at<double>(3);
-      x3D             = x3D.rowRange(0, 3) / x3D.at<double>(3);
+      x3D = x3D.rowRange(0, 3) / x3D.at<double>(3);
 
       const cv::Mat reconstructedPoint = x3D;
 
@@ -132,8 +134,8 @@ PoseEstimator::validatePose(const std::vector<cv::Mat> &rotations,
 
       if (reprojectedError < bestError) {
         bestError = reprojectedError;
-        R         = rotations[i];
-        t         = translations[i];
+        R = rotations[i];
+        t = translations[i];
       }
     }
   }

@@ -7,6 +7,7 @@ add_executable(
   TestHomography.cpp
   TestPoint.cpp
   TestFundamentalMatrix.cpp
-  TestPoseEstimator.cpp)
+  TestPoseEstimator.cpp
+  TestPose.cpp)
 
 target_link_libraries(tester gtest wip)

@@ -20,7 +20,7 @@ public:
             const std::vector<cv::Point2d> &dstPoints) const = 0;
 
   virtual std::tuple<double, std::vector<std::pair<cv::Point2d, cv::Point2d>>>
-  evaluate(const cv::Mat &HorF, std::vector<cv::Point2d> &srcPoints,
+  evaluate(const cv::Mat &HorF, const std::vector<cv::Point2d> &srcPoints,
            const std::vector<cv::Point2d> &dstPoints) = 0;
 
   virtual Pose calcPose(const cv::Mat &HorF, const cv::Mat &K) = 0;
@@ -33,9 +33,13 @@ public:
     return inliners_;
   }
 
+  std::vector<cv::Point2d> usedSrcPoints() const { return usedSrcPoints_; }
+  std::vector<cv::Point2d> usedDstPoints() const { return usedDstPoints_; }
+
 protected:
   size_t ransacN_;
   std::vector<std::pair<cv::Point2d, cv::Point2d>> inliners_;
+  std::vector<cv::Point2d> usedSrcPoints_, usedDstPoints_;
 };
 
 cv::Mat compositeProjectionMatrix(const cv::Mat &K, const cv::Mat &R,
