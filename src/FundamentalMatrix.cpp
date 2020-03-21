@@ -7,7 +7,7 @@ namespace wip {
 cv::Mat FundamentalMatrixEstimator::calculate(
   const std::vector<cv::Point2d> &srcPoints,
   const std::vector<cv::Point2d> &dstPoints) const {
-  return cv::findFundamentalMat(srcPoints, dstPoints);
+  return cv::findFundamentalMat(srcPoints, dstPoints, cv::FM_LMEDS);
 }
 
 std::tuple<double, std::vector<std::pair<cv::Point2d, cv::Point2d>>>
